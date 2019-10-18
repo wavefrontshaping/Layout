@@ -102,50 +102,9 @@ class Squares(Layout):
         r = self._sqSize/2
         angles = np.arange(-3*np.pi/4,-11*np.pi/4,-np.pi/2)
         self._firstHex = []
-        # First one
-#        vertices = [ [cellSize//2+r*np.cos(a),cellSize//2+r*np.sin(a)] for a in angles]
-#        vertices = map(list,(itertools.product([1, 1+self._sqSize], repeat= 2)))
-#        vertices = [ [cellSize//2+r*np.cos(a),cellSize//2+r*np.sin(a)] for a in angles]
-
-#        self._firstHex.append(createPolygon(self._resCell,vertices))
-#        self._oneSqua = np.argwhere(createPolygon(self._resCell,vertices)).astype(int)
         self._oneSqua = np.argwhere(np.ones((self._sqSize,self._sqSize))).astype(int)
-        # Second one
-#        offsetX = (self._hexSize+self._gap)/2;
-#        offsetX = offsetX-np.round(offsetX)
-#        offsetY = (self._hexSize+self._gap)*np.sqrt(3)/2
-#        offsetY = offsetY-np.round(offsetY)
-#        vertices = [ [self._hexSize+1.+offsetX+r*np.cos(a),self._hexSize+1.+offsetY+r*np.sin(a)] for a in angles]
-#        self._firstHex.append(createPolygon(self._resCell,vertices))
-        
-#        plt.figure(); plt.imshow(self._firstHex[0],interpolation = 'None')
-#        plt.figure(); plt.imshow(self._firstHex[1],interpolation = 'None')
-        
 
-
-        
-    def sortSegments(self,order='dist2center',rearrange = True):
-        '''
-            Is used to sort segments 
-        '''
-        # sort the hexagons based on their distance to the center
-        if order == 'dist2center':
-            idx = np.array(self._rparts).argsort().astype(int)
-        elif order == 'angles':
-            idx = np.array(self._angles).argsort().astype(int)
-        elif order == 'rndm':
-            idx = range(self.nParts)
-            shuffle(idx)
-        else:
-            raise ValueError('Invalid sorting order argument.')
-        if rearrange:
-            self._parts = [self._parts[i] for i in idx]
-            self._rparts = self._rparts[idx]
-            self._grid = self._grid[idx]
-            self._angles = self._angles[idx]
-        return idx
     
-        
 
     def getSquareSegments(self):
         self.nParts = 0
@@ -206,9 +165,7 @@ class Hexagons(Layout):
             self._center = center
 
         self.logger.info('Creation of the hexagonal layout')
-#        print('Setting up the grid.')
-#        self.setupGrid()
-#        print('Creation of the hexagons.' )
+
         self._parts = []
 
         self.logger.debug('Creation of the hexagons and removal of the center column')
@@ -219,10 +176,7 @@ class Hexagons(Layout):
         self.getHexagonSegments()
 
         self.logger.info('-> Number of segments = %g' % self.nParts)
-#        self.getFirstHexagons()
-#        self.drawHexagons()
-#        self.getHexagons()
-#        self.checkOverlaps()
+
         # We need to check that the segments do not overlap
         if checkOverlaps and self.checkOverlaps():
         
@@ -257,17 +211,7 @@ class Hexagons(Layout):
         self._oneHex = np.argwhere(createPolygon(self._resCell,vertices)).astype(int)
 
         return self._oneHex
-        # Second one
-#        offsetX = (self._hexSize+self._gap)/2;
-#        offsetX = offsetX-np.round(offsetX)
-#        offsetY = (self._hexSize+self._gap)*np.sqrt(3)/2
-#        offsetY = offsetY-np.round(offsetY)
-#        vertices = [ [self._hexSize+1.+offsetX+r*np.cos(a),self._hexSize+1.+offsetY+r*np.sin(a)] for a in angles]
-#        self._firstHex.append(createPolygon(self._resCell,vertices))
-        
-#        plt.figure(); plt.imshow(self._firstHex[0],interpolation = 'None')
-#        plt.figure(); plt.imshow(self._firstHex[1],interpolation = 'None')
-        
+
     def removeOneCol(self):
         '''
         Removes the center column of self.oneHex
@@ -277,53 +221,8 @@ class Hexagons(Layout):
         self._oneHex = np.array(singleHex)
         
         
-#    def getXOrder(self):
-#        ''' 
-#        Returns a dictionnary containing the indexes of elements
-#        which share same X center value (= dict keys).
-#        This is a preliminary function of self.evenize
-#        '''
-#        self.Xorder_dict = {}
-#        for idx,value in enumerate(self._grid[:,1]):
-#            if str(value) in layout_dict.keys():
-#                self.Xorder_dict[str(value)] += [idx]
-#            else:
-#                self.Xorder_dict[str(value)] = [idx]
-#
-#    def evenize(self):
-#        '''
-#        For each hexagon, removes the centermost column so that the hexagon
-#        becomes even, and also so they all have the same polarity.
-#        '''
-#        Xcenters = np.array(self.Xorder_dict.keys(),dtype = int)
-#        Xcenters.sort()
-#        num_keys = len(self.Xorder_dict.keys())
-#        for x_col in Xcenters:
-#            for idx in self.Xorder_dict[str(x_col)]:
-#                new_part = [[duo[0],duo[1]-(np.sign(duo[1]-x_col)+1)/2] for duo in self._parts[idx] if duo[1] != x_col]
-#                self._parts[idx] = new_part
-#        
         
-        
-    def sortSegments(self,order='dist2center',rearrange = True):
-        # sort the hexagons based on their distance to the center
-        if order == 'dist2center':
-            idx = np.array(self._rparts).argsort().astype(int)
-        elif order == 'angles':
-            idx = np.array(self._angles).argsort().astype(int)
-        elif order == 'rnd':
-            idx = range(self.nParts)
-            shuffle(idx)
-        else:
-            self.logger.error('Invalid sorting order argument.')
-            raise ValueError('Invalid sorting order argument.')
-        if rearrange:
-            self._parts = [self._parts[i] for i in idx]
-            self._rparts = self._rparts[idx]
-            self._grid = self._grid[idx]
-            self._angles = self._angles[idx]
-        return idx
-    
+ 
         
 
     def getHexagonSegments(self):
@@ -399,10 +298,7 @@ class Diamonds(Layout):
         self.getDiamondSegments()
         if verbose:
             self.logger.info(('-> Number of segments = %g' % self.nParts))
-#        self.getFirstHexagons()
-#        self.drawHexagons()
-#        self.getHexagons()
-#        self.checkOverlaps()
+
         # If no gap, we need to check that the segments do not overlap
         # We recompile the segments so that there is no overlap
         # Small disparities in the segment surfaces arise
@@ -435,39 +331,13 @@ class Diamonds(Layout):
         self._firstHex = []
         # First one
         vertices = [ [cellSize//2+r*np.cos(a),cellSize//2+r*np.sin(a)] for a in angles]
-#        self._firstHex.append(createPolygon(self._resCell,vertices))
         self._oneHex = np.argwhere(createPolygon(self._resCell,vertices)).astype(int)
-        # Second one
-#        offsetX = (self._hexSize+self._gap)/2;
-#        offsetX = offsetX-np.round(offsetX)
-#        offsetY = (self._hexSize+self._gap)*np.sqrt(3)/2
-#        offsetY = offsetY-np.round(offsetY)
-#        vertices = [ [self._hexSize+1.+offsetX+r*np.cos(a),self._hexSize+1.+offsetY+r*np.sin(a)] for a in angles]
-#        self._firstHex.append(createPolygon(self._resCell,vertices))
-        
-#        plt.figure(); plt.imshow(self._firstHex[0],interpolation = 'None')
-#        plt.figure(); plt.imshow(self._firstHex[1],interpolation = 'None')
+
         
 
 
         
-    def sortSegments(self,order='dist2center',rearrange = True):
-        # sort the diamond based on their distance to the center
-        if order == 'dist2center':
-            idx = np.array(self._rparts).argsort().astype(int)
-        elif order == 'angles':
-            idx = np.array(self._angles).argsort().astype(int)
-        elif order == 'rndm':
-            idx = range(self.nParts)
-            shuffle(idx)    
-        else:
-            raise ValueError('Invalid sorting order argument.')
-        if rearrange:
-            self._parts = [self._parts[i] for i in idx]
-            self._rparts = self._rparts[idx]
-            self._grid = self._grid[idx]
-            self._angles = self._angles[idx]
-        return idx
+
     
         
 

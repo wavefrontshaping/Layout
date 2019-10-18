@@ -208,7 +208,7 @@ class Layout:
 
     def getProjections(self,array,phase = False,center = True):
         '''
-        Return the projection of an array on the segments of the layout.
+        Returns the projection of an array on the segments of the layout.
         
         Parameters
         ----------
@@ -233,11 +233,49 @@ class Layout:
                 out_vec[idx] = np.sum(array[part[:,0],part[:,1]])
         return out_vec
             
+    def sortSegments(self,order='dist2center',rearrange = True):
+        '''
+        Sort the segment with respect to the chosen criteria.
+        Returns the index list of the sorted elements.
         
+        Parameters
+        ----------
+        order : string, optional
+            Sorting criteria, can take following values:
+            - 'dist2center' :  Sorts the elements by there distance to the center of the figure (default).
+            - 'angle' : Sorts the elements by there angular position.
+            - 'random' : Randomly shuffles the elements.
+
+        rearrange : bool, optional
+            If rearrange is set to True, the order of the elements will be changed in the layout object,
+            if not, the new order is returned via the index list but the layout object remains unchanged. 
+            
+        Returns
+        -------
+        idx : list
+            List index of the sorted segments of the layout.
+        '''
+        if order == 'dist2center':
+            idx = np.array(self._rparts).argsort().astype(int)
+        elif order == 'angles':
+            idx = np.array(self._angles).argsort().astype(int)
+        elif order == 'random':
+            idx = range(self.nParts)
+            shuffle(idx)    
+        else:
+            raise ValueError('Invalid sorting order argument.')
+        if rearrange:
+            self._parts = [self._parts[i] for i in idx]
+            self._rparts = self._rparts[idx]
+            self._grid = self._grid[idx]
+            self._angles = self._angles[idx]
+        return idx
+
     def showLayout(self):
+    '''
+    Display the layout, shows each cell in a different color.
+    '''
             pattern = self.getMaskFromVec(np.arange(10,10+self.nParts))
-#            for p in test._grid:    
-#                pattern[int(p[0]),int(p[1])] = -1
             plt.figure();plt.imshow(pattern);plt.colorbar()
 
     def calculateSurfaces(self):
