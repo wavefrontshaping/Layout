@@ -14,7 +14,7 @@ import numpy, sys, os
 
 ext_modules = [
     Extension("Layout.core",  ["Layout/core.pyx"],include_dirs=[numpy.get_include()]),
-    Extension("Layout.layouts",  ["Layout/layouts.pyx"]),
+    Extension("Layout.layouts",  ["Layout/layouts.pyx"])
 ]
 
 
@@ -29,6 +29,7 @@ setup(name='Layout',
           'numpy',
           'matplotlib',
       ],
+    packages=['Layout'],
       #find_pyx(path='Layout/')
     ext_modules=cythonize(ext_modules, language_level=sys.version_info[0])
     # [

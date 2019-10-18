@@ -15,12 +15,12 @@ import itertools
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from cpython cimport array
 import array
-
+from random import shuffle
 import logging
+
 
 def logical_xor(str1, str2):
     return bool(str1) ^ bool(str2)
-
 
 class Layout:
     def __init__(self):
@@ -155,7 +155,7 @@ class Layout:
                 for i_part from 0<= i_part < clengths[i_vec] by 1:
                     # first condition is the grating for encoding the phase
                     # second condition encodes the amplitude by reducing removing lines in the direction orthogonal to the first grating
-                    if ((tilt_y*mparty[count_pos+i_part]+offset + tilt_x*mpartx[count_pos+i_part]) % cperiod)  < (0.5*cperiod) and \
+                    if ((tilt_y*mparty[count_pos+i_part] + offset + tilt_x*mpartx[count_pos+i_part]) % cperiod)  < (0.5*cperiod) and \
                        ((tilt_x*mparty[count_pos+i_part] - tilt_y*mpartx[count_pos+i_part]) % cperiod)  < (mvec_amp[i_vec]*cperiod) :
 
                             img[mpos[count_pos+i_part]] ^=(1<<(~mparty[count_pos+i_part]&7))
@@ -206,7 +206,7 @@ class Layout:
   
 
 
-    def getProjections(self,array,phase = False,center = True):
+    def getProjections(self, array, phase = False, center = True):
         '''
         Returns the projection of an array on the segments of the layout.
         
@@ -220,10 +220,12 @@ class Layout:
         out_vec : list
             List of coefficient corresponding to the projection on each segment of the layout.
         '''
+
+        
         if phase == False:
             out_vec = np.empty(self.nParts)
         elif phase == True:
-            out_vec = np.empty(self.nParts,dtype = complex)
+            out_vec = np.empty(self.nParts, dtype = complex)
         for idx,part in enumerate(self._parts):
             if phase and center:
                 coords_center = map(int,(np.mean(part,axis = (0))))
@@ -272,11 +274,11 @@ class Layout:
         return idx
 
     def showLayout(self):
-    '''
-    Display the layout, shows each cell in a different color.
-    '''
-            pattern = self.getMaskFromVec(np.arange(10,10+self.nParts))
-            plt.figure();plt.imshow(pattern);plt.colorbar()
+        '''
+        Display the layout, shows each cell in a different color.
+        '''
+        pattern = self.getMaskFromVec(np.arange(10,10+self.nParts))
+        plt.figure();plt.imshow(pattern);plt.colorbar()
 
     def calculateSurfaces(self):
         self._surfaces = []
