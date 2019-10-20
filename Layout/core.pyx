@@ -73,7 +73,7 @@ class Layout:
 
 
     def _calculatePosVec(self):
-        
+        self._pos_vec = []
         for part in self._parts:
             self._pos_vec.append((np.array(part[:,1])//8).astype('uint')+(part[:,0]*self._res[1]//8).astype('uint'))
     
@@ -206,7 +206,7 @@ class Layout:
   
 
 
-    def getProjections(self, array, phase = False, center = True):
+    def getProjections(self, array, method = 'sum'):
         '''
         Returns the projection of an array on the segments of the layout.
         
@@ -214,27 +214,50 @@ class Layout:
         ----------
         array : ndarray
             It has to have the same dimension as the layout.
+        
+        method : string, optional
+            If method = 'sum', returns the sum of the values of the array on each segment of the layout,
+            if method = 'average', returns the average value of the array on each segment of the layout,
+            if method = 'complex', returns a complex value whose amplitude is the sum of the absolute values
+            in the segments and the phase is the phase at the center of the segments,
+            if method = 'center', returns the value at the center of each segment.
+            The default value is 'average'.
             
         Returns
         -------
         out_vec : list
             List of coefficient corresponding to the projection on each segment of the layout.
         '''
-
+        if not method in ['sum','center','complex','average']:
+            raise(ValueError,'Unvalid method.')
         
-        if phase == False:
-            out_vec = np.empty(self.nParts)
-        elif phase == True:
-            out_vec = np.empty(self.nParts, dtype = complex)
+
+        out_vec = np.empty(self.nParts, dtype = complex)
+
         for idx,part in enumerate(self._parts):
-            if phase and center:
-                coords_center = map(int,(np.mean(part,axis = (0))))
-                angle_center = np.angle(array[coords_center[0],coords_center[1]])
-                out_vec[idx] = np.sum(np.abs(array[part[:,0],part[:,1]])) * np.exp(1j * angle_center)
-            else:
+            if method == 'complex' or  method == 'center':
+                #coords_center = np.mean(part,axis = 0).astype(np.int)
+                coords_center = tuple(zip(*[self._grid[idx]]))
+                if method == 'complex':
+                    #angle_center = np.angle(array[coords_center[0],coords_center[1]])
+                    angle_center = np.angle(array[coords_center])
+                    out_vec[idx] = np.sum(np.abs(array[part[:,0],part[:,1]])) * np.exp(1j * angle_center)
+                elif method == 'center':
+                    out_vec[idx] = array[coords_center]
+            elif method == 'sum':
                 out_vec[idx] = np.sum(array[part[:,0],part[:,1]])
+            elif method == 'average':
+                out_vec[idx] = np.mean(array[part[:,0],part[:,1]])
         return out_vec
-            
+
+    def getCenters(self,vec = None):
+        '''
+        Get the center position of the segments indexed by the input vector.
+        '''  
+        if vec:
+            return self._grid[vec]
+        else:
+            return self._grid
     def sortSegments(self,order='dist2center',rearrange = True):
         '''
         Sort the segment with respect to the chosen criteria.

@@ -1,5 +1,4 @@
 from .core import Layout
-from random import shuffle
 import numpy as np
 import matplotlib.pyplot as plt
 
