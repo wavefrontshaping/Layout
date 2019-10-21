@@ -32,10 +32,42 @@ class Layout:
         # the Layout class displays messages in a logging fashion. Output should be directed into logs and stdout in the main program.
         # most messages are at DEBUG level, thus you can prevent their display by setting the threshold higher. 
         self.logger = logging.getLogger(__name__) 
-   
-    def getMaskFromVec(self,vec, overlap = False, dtype = float):
+
+    def getMaskFromImage(self, complex_pattern, leePeriod = 1, angle = 0):
         '''
-        Creates a mask (image) from a list of values corresponding to the field one want to display on each segment of the layout.
+        Generate a binary amplitude mask from a complex image of the sime size as the full Layout.
+
+        Parameters
+        ----------
+        vec : np.array
+            An image of the same size as the Layout corresponding to the target optical field. Can be complex valued.
+
+        leePeriod : int, optional
+            The period of the Lee Hologram grating. The default value is 1 (no grating).
+
+        angle : float, optional
+            The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).
+
+        Returns
+        -------
+        array : np.array
+            The image that has the same resolution as the layout encoded in 8-bit.
+        '''
+        assert not np.max(np.abs(complex_pattern)) > 1.
+  
+        phase_shift = 1+np.floor(np.angle(complex_pattern)/np.pi*leePeriod-1e-5)
+        X,Y = np.meshgrid(np.arange(self._res[1]),np.arange(self._res[0]))
+        mask = (np.mod((np.cos(angle)*X+np.sin(angle)*Y+phase_shift),leePeriod) \
+                < leePeriod*0.5) 
+        mask *= (np.mod((-np.sin(angle)*X+np.cos(angle)*Y),leePeriod) \
+                < leePeriod*np.abs(complex_pattern))
+        mask = mask.astype(int)
+        mask *= (2**8-1)
+        return mask.astype(np.uint8)
+   
+    def getImageFromVec(self,vec, overlap = False, dtype = complex):
+        '''
+        Creates a image from a list of values corresponding to the field one want to display on each segment of the layout.
         The returned mask can then be used to send images to a DMD using the ALP4lib module.
 
 
@@ -48,7 +80,7 @@ class Layout:
             If overlap = True, the values will be added for pixels belonging to two or more segments of the layout (can happen with no gap between the segments)
         
         dtype : dtype, optional
-            dtype of the returned array. Default dtype is float.
+            dtype of the returned array. Default dtype is complex.
 
         Returns
         -------
@@ -57,8 +89,7 @@ class Layout:
         '''
         if not len(vec) == self.nParts:
             raise ValueError('Vector should have the same number of elements as the number of parts in the layout.')
-        # self.logger.debug('Using dtype = {} for projection'.format(dtype))
-        # using the complex dtype is useful in case you want to project complex value for visualization. However, in general you don't want this behaviour.
+        
         img = np.zeros([self._res[0],self._res[1]],dtype = dtype) 
 
         
@@ -98,7 +129,7 @@ class Layout:
             The period of the Lee Hologram grating. The default value is 1 (no grating).
 
         angle : float, optional
-            The angle of the Lee Hologram grating. The default angle is 0. (vertical grating)
+            The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).
 
         inversion : bool, optional
             If inversion is set to True, all the bits are switched (0/1 becomes 1/0). The default value is False.
@@ -300,7 +331,7 @@ class Layout:
         '''
         Display the layout, shows each cell in a different color.
         '''
-        pattern = self.getMaskFromVec(np.arange(10,10+self.nParts))
+        pattern = self.getImageFromVec(np.arange(10,10+self.nParts), dtype = float)
         plt.figure();plt.imshow(pattern);plt.colorbar()
 
     def calculateSurfaces(self):
@@ -319,7 +350,7 @@ class Layout:
         for i in range(self.nParts):
             vec = [0.]*self.nParts
             vec[i] = 1
-            pattern += self.getMaskFromVec(vec,overlap=True)
+            pattern += self.getImageFromVec(vec, overlap=  True, dtype = float)
 
         if display:
             plt.figure();plt.title('Check overlaps' )
@@ -336,7 +367,7 @@ class Layout:
         for i in range(self.nParts):
             vec = [0.]*self.nParts
             vec[i] = 1
-            pattern += self.getMaskFromVec(vec,overlap=True)
+            pattern += self.getImageFromVec(vec, verlap = True, dtype = float)
             # remove part in commom with one of the previous hexagon            
 
             ind = np.argwhere(pattern == 2)
