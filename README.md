@@ -1,7 +1,7 @@
 # Layout
 A library to create layouts of various shapes for wavefrontshaping using DMDs or SLMs.
 It is specifically designed to work with the [ALP4lib](https://github.com/wavefrontshaping/ALP4lib) module to control Vialux DMDs but can also be used for other types of SLMs or DMDs.
-In particular, it allows to generate **bitplanes** in C format data that can be sent to the DMD with fast transfer time (see Vialux documentation). The corresponding function are coded in Cython for optimized computation speed.
+In particular, it allows generating **bitplanes** in C format data that can be sent to the DMD with fast transfer time (see Vialux documentation). The corresponding function are coded in Cython for optimized computation speed.
 
 ## Citing the code
 
