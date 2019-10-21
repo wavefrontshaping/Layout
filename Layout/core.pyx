@@ -36,6 +36,7 @@ class Layout:
     def getMaskFromImage(self, complex_pattern, leePeriod = 1, angle = 0):
         '''
         Generate a binary amplitude mask from a complex image of the sime size as the full Layout.
+        WARNING: This function is not optimized in Cython.
 
         Parameters
         ----------
