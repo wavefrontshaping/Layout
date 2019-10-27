@@ -368,7 +368,7 @@ class Layout:
         for i in range(self.nParts):
             vec = [0.]*self.nParts
             vec[i] = 1
-            pattern += self.getImageFromVec(vec, verlap = True, dtype = float)
+            pattern += self.getImageFromVec(vec, overlap = True, dtype = float)
             # remove part in commom with one of the previous hexagon            
 
             ind = np.argwhere(pattern == 2)
