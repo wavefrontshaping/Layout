@@ -16,7 +16,12 @@ from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from cpython cimport array
 import array
 from random import shuffle
-import logging
+
+from .logger import get_logger
+
+# the Layout class displays messages in a logging fashion. Output should be directed into logs and stdout in the main program.
+ # most messages are at DEBUG level, thus you can prevent their display by setting the threshold higher. 
+logger = get_logger(__name__)
 
 
 def logical_xor(str1, str2):
@@ -29,9 +34,8 @@ class Layout:
         self._res = [0,0]
         self._pos_vec = []
         self._surfaces = None
-        # the Layout class displays messages in a logging fashion. Output should be directed into logs and stdout in the main program.
-        # most messages are at DEBUG level, thus you can prevent their display by setting the threshold higher. 
-        self.logger = logging.getLogger(__name__) 
+        
+
 
     def getMaskFromImage(self, complex_pattern, leePeriod = 1, angle = 0):
         '''

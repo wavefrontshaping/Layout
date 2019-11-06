@@ -1,6 +1,9 @@
 from .core import Layout
+from .logger import get_logger
 import numpy as np
 import matplotlib.pyplot as plt
+
+logger = get_logger(__name__)
 
 def checkLine(p1, p2, shape):
     """
@@ -39,10 +42,10 @@ def createPolygon(shape, vertices):
     return fill
 
 class Squares(Layout):
-    def __init__(self,radius,sqSize, resolution, center = None, gap = 0,verbose = True):
+    def __init__(self,radius,cellSize, resolution, center = None, gap = 0,verbose = True):
         
         Layout.__init__(self)  
-        self._sqSize = (sqSize)
+        self._cellSize = (cellSize)
         self._radius = radius
         self._res = resolution
         self._surfaces = []
@@ -55,19 +58,19 @@ class Squares(Layout):
             self._center = center
         
         if verbose:
-            self.logger.info('Creation of hexagonal layout.')
+            logger.info('Creation of hexagonal layout.')
 #        print('Setting up the grid.')
 #        self.setupGrid()
 #        print('Creation of the hexagons.' )
         self._parts = []
         if verbose:
-            self.logger.info('Creation of the hexagons.' )
+            logger.info('Creation of the hexagons.' )
         self.getSquareCell()
         if verbose:
-            self.logger.info('Setting up the grid.')
+            logger.info('Setting up the grid.')
         self.getSquareSegments()
         if verbose:
-            self.logger.info(('-> Number of segments = %g' % self.nParts))
+            logger.info(('-> Number of segments = %g' % self.nParts))
 #        self.getFirstHexagons()
 #        self.drawHexagons()
 #        self.getHexagons()
@@ -77,16 +80,16 @@ class Squares(Layout):
         # Small disparities in the segment surfaces arise
         if self._gap == 0:
             if verbose:
-                self.logger.info('Removing overlaps.')
+                logger.info('Removing overlaps.')
             self.removeOverlaps()
             
         self.calculateSurfaces()
         if self._gap == 0:
             if verbose:
-                self.logger.info(('-> Maximum relative variation of segment surfaces = %0.3f' % (float(max(self._surfaces)-min(self._surfaces))/float(max(self._surfaces)))))
+                logger.info(('-> Maximum relative variation of segment surfaces = %0.3f' % (float(max(self._surfaces)-min(self._surfaces))/float(max(self._surfaces)))))
 
         if verbose:
-            self.logger.info('Sorting segments.')
+            logger.info('Sorting segments.')
         self.sortSegments()
         
               
@@ -95,31 +98,31 @@ class Squares(Layout):
     def getSquareCell(self):
         # need to draw two hexagons manually 
         # they will be used to generate the whole pattern
-        cellSize = self._sqSize
+        cellSize = self._cellSize
         cellSize += np.mod(cellSize,2)
         self._resCell = [cellSize]*2
-        r = self._sqSize/2
+        r = self._cellSize/2
         angles = np.arange(-3*np.pi/4,-11*np.pi/4,-np.pi/2)
         self._firstHex = []
-        self._oneSqua = np.argwhere(np.ones((self._sqSize,self._sqSize))).astype(int)
+        self._oneSqua = np.argwhere(np.ones((self._cellSize,self._cellSize))).astype(int)
 
     
 
     def getSquareSegments(self):
         self.nParts = 0
-        ny_max = int(np.floor(float(self._radius)/self._sqSize))
+        ny_max = int(np.floor(float(self._radius)/self._cellSize))
         rsq = []
         self._parts = []
         self._grid = []
         self._angles = []
-        x_shift = int(np.floor(self._sqSize+self._gap))
+        x_shift = int(np.floor(self._cellSize+self._gap))
        # x_shift -= np.mod(x_shift+1,2) 
-        y_shift = int(np.floor(self._gap+self._sqSize))
+        y_shift = int(np.floor(self._gap+self._cellSize))
         #y_shift += np.mod(y_shift+1,2) 
         for y in np.arange(-ny_max-1,ny_max+1):
             ind = np.mod(y,2)
             # one out of two line is shifted
-            add_shift = ind*int(0.5*(self._sqSize+self._gap))
+            add_shift = ind*int(0.5*(self._cellSize+self._gap))
             if (float(self._radius)/y_shift)**2-y**2 > 0:
                 nx_max = int(np.floor(np.sqrt((float(self._radius)/y_shift)**2-y**2)))
             else:
@@ -149,10 +152,10 @@ class Squares(Layout):
 
 
 class Hexagons(Layout):
-    def __init__(self,radius,hexSize, resolution, center = None, gap = 0,verbose = True, checkOverlaps = True):
+    def __init__(self,radius, cellSize, resolution, center = None, gap = 0,verbose = True, checkOverlaps = True):
         
         Layout.__init__(self)  
-        self._hexSize = hexSize
+        self._cellSize = cellSize
         self._radius = radius
         self._res = resolution
         self._grid = []
@@ -163,32 +166,32 @@ class Hexagons(Layout):
         else:
             self._center = center
 
-        self.logger.info('Creation of the hexagonal layout')
+        logger.info('Creation of the hexagonal layout')
 
         self._parts = []
 
-        self.logger.debug('Creation of the hexagons and removal of the center column')
+        logger.debug('Creation of the hexagons and removal of the center column')
         self.getHexagonCell()
         self.removeOneCol()
 
-        self.logger.debug('Setting up the grid')
+        logger.debug('Setting up the grid')
         self.getHexagonSegments()
 
-        self.logger.info('-> Number of segments = %g' % self.nParts)
+        logger.info('-> Number of segments = %g' % self.nParts)
 
         # We need to check that the segments do not overlap
         if checkOverlaps and self.checkOverlaps():
         
             # We recompile the segments so that there is no overlap
             # Small disparities in the segment surfaces arise
-            self.logger.debug('Removing overlaps')
+            logger.debug('Removing overlaps')
             self.removeOverlaps()
                 
         self.calculateSurfaces()
         if self._gap == 0:
-            self.logger.debug('-> Maximum relative variation of segment surfaces = %0.3f' % (float(max(self._surfaces)-min(self._surfaces))/float(max(self._surfaces))))
+            logger.debug('-> Maximum relative variation of segment surfaces = %0.3f' % (float(max(self._surfaces)-min(self._surfaces))/float(max(self._surfaces))))
         
-        self.logger.debug('Sorting segments accoring to distance from center (default)')
+        logger.debug('Sorting segments accoring to distance from center (default)')
         self.sortSegments()
         
               
@@ -198,10 +201,10 @@ class Hexagons(Layout):
     def getHexagonCell(self):
         # need to draw two hexagons manually 
         # they will be used to generate the whole pattern
-        cellSize = int(2./np.sqrt(3)*self._hexSize)
+        cellSize = int(2./np.sqrt(3)*self._cellSize)
         cellSize += np.mod(cellSize,2)
         self._resCell = [cellSize]*2
-        r = 1./np.sqrt(3)*self._hexSize
+        r = 1./np.sqrt(3)*self._cellSize
         angles = np.arange(-np.pi/2,-2.5*np.pi,-np.pi/3)
         self._firstHex = []
         # First one
@@ -226,19 +229,19 @@ class Hexagons(Layout):
 
     def getHexagonSegments(self):
         self.nParts = 0
-        ny_max = int(np.floor(float(self._radius)/self._hexSize*2/np.sqrt(3)))
+        ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
         rsq = []
         self._parts = []
         self._grid = []
         self._angles = []
-        x_shift = int(np.floor(self._hexSize+self._gap))
+        x_shift = int(np.floor(self._cellSize+self._gap))
         x_shift -= np.mod(x_shift+1,2) 
-        y_shift = int(np.floor((self._gap+self._hexSize)*np.sqrt(3)/2))-1
+        y_shift = int(np.floor((self._gap+self._cellSize)*np.sqrt(3)/2))-1
         y_shift += np.mod(y_shift+1,2) 
         for y in np.arange(-ny_max-1,ny_max+1):
             ind = np.mod(y,2)
             # one out of two lines is shifted
-            add_shift = ind*int(0.5*(self._hexSize+self._gap))
+            add_shift = ind*int(0.5*(self._cellSize+self._gap))
             if (float(self._radius)/y_shift)**2-y**2 > 0:
                 nx_max = int(np.floor(np.sqrt((float(self._radius)/y_shift)**2-y**2)))
             else:
@@ -268,10 +271,10 @@ class Hexagons(Layout):
 
 
 class Diamonds(Layout):
-    def __init__(self,radius,hexSize, resolution, center = None, gap = 0,verbose = True):
+    def __init__(self,radius, cellSize, resolution, center = None, gap = 0,verbose = True):
         
         Layout.__init__(self)  
-        self._hexSize = hexSize
+        self._cellSize = cellSize
         self._radius = radius
         self._res = resolution
         self._surfaces = []
@@ -284,36 +287,34 @@ class Diamonds(Layout):
             self._center = center
         
         if verbose:
-            self.logger.info('Creation of hexagonal layout.')
-#        print('Setting up the grid.')
-#        self.setupGrid()
-#        print('Creation of the hexagons.' )
+            logger.info('Creation of hexagonal layout.')
+
         self._parts = []
         if verbose:
-            self.logger.info('Creation of the hexagons.' )
+            logger.info('Creation of the hexagons.' )
         self.getHexagonCell()
         if verbose:
-            self.logger.info('Setting up the grid.')
+            logger.info('Setting up the grid.')
         self.getDiamondSegments()
         if verbose:
-            self.logger.info(('-> Number of segments = %g' % self.nParts))
+            logger.info(('-> Number of segments = %g' % self.nParts))
 
         # If no gap, we need to check that the segments do not overlap
         # We recompile the segments so that there is no overlap
         # Small disparities in the segment surfaces arise
         if self._gap == 0:
             if verbose:
-                self.logger.info('Removing overlaps.')
+                logger.info('Removing overlaps.')
             self.removeOverlaps()
             
         self.calculateSurfaces()
         if self._gap == 0:
             if verbose:
-                self.logger.info(('-> Maximum relative variation of segment surfaces = %0.3f' % (float(max(self._surfaces)-min(self._surfaces))/float(max(self._surfaces)))))
+                logger.info(('-> Maximum relative variation of segment surfaces = %0.3f' % (float(max(self._surfaces)-min(self._surfaces))/float(max(self._surfaces)))))
 
         
         if verbose:
-            self.logger.info('Sorting segments.')
+            logger.info('Sorting segments.')
         self.sortSegments()
         
               
@@ -322,10 +323,10 @@ class Diamonds(Layout):
     def getDiamondCell(self):
         # need to draw two diamond manually 
         # they will be used to generate the whole pattern
-        cellSize = int(2./np.sqrt(3)*self._hexSize)
+        cellSize = int(2./np.sqrt(3)*self._cellSize)
         cellSize += np.mod(cellSize,2)
         self._resCell = [cellSize]*2
-        r = 1./np.sqrt(3)*self._hexSize
+        r = 1./np.sqrt(3)*self._cellSize
         angles = np.arange(-np.pi/2,-2.5*np.pi,-np.pi/2)
         self._firstHex = []
         # First one
@@ -342,22 +343,22 @@ class Diamonds(Layout):
 
     def getDiamondSegments(self):
         self.nParts = 0
-        ny_max = int(np.floor(float(self._radius)/self._hexSize*2/np.sqrt(3)))
+        ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
         rsq = []
         self._parts = []
         self._grid = []
         self._angles = []
-#        x_shift = int(np.floor(self._hexSize+self._gap))-1
-        x_shift = int((2*self._gap + self._hexSize))-2
+#        x_shift = int(np.floor(self._cellSize+self._gap))-1
+        x_shift = int((2*self._gap + self._cellSize))-2
 #        x_shift -= np.mod(x_shift+1,2) 
-#        y_shift = int(np.floor((self._gap+self._hexSize)*np.sqrt(3)/2))-1
-        y_shift = int(np.floor(0.5*self._hexSize+self._gap))-1
+#        y_shift = int(np.floor((self._gap+self._cellSize)*np.sqrt(3)/2))-1
+        y_shift = int(np.floor(0.5*self._cellSize+self._gap))-1
         y_shift += np.mod(y_shift+1,2) 
         for y in np.arange(-ny_max-1,ny_max+1):
             ind = np.mod(y,2)
             # one out of two line is shifted
-#            add_shift = ind*int(0.5*(self._hexSize+self._gap))
-            add_shift = ind * 0.5 * (self._hexSize + 2*self._gap-2)#-ind*int(0.5*(np.sqrt(2)*self._gap + self._hexSize))
+#            add_shift = ind*int(0.5*(self._cellSize+self._gap))
+            add_shift = ind * 0.5 * (self._cellSize + 2*self._gap-2)#-ind*int(0.5*(np.sqrt(2)*self._gap + self._cellSize))
             if (float(self._radius)/y_shift)**2-y**2 > 0:
                 nx_max = int(np.floor(np.sqrt((float(self._radius)/y_shift)**2-y**2)))
             else:

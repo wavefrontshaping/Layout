@@ -30,6 +30,7 @@ setup(name='Layout',
           'matplotlib',
       ],
     packages=['Layout'],
+    py_modules = ['Layout.logger'],
       #find_pyx(path='Layout/')
     ext_modules=cythonize(ext_modules, language_level=sys.version_info[0])
     # [
