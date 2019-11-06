@@ -5,7 +5,6 @@ Created on Thu Oct 13 14:41:53 2016
 @author: S.M. Popoff, M.W. Matthes
 """
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-
 import time
 import numpy as np
 cimport numpy as np
@@ -20,9 +19,8 @@ from random import shuffle
 from .logger import get_logger
 
 # the Layout class displays messages in a logging fashion. Output should be directed into logs and stdout in the main program.
- # most messages are at DEBUG level, thus you can prevent their display by setting the threshold higher. 
+# most messages are at DEBUG level, thus you can prevent their display by setting the threshold higher. 
 logger = get_logger(__name__)
-
 
 def logical_xor(str1, str2):
     return bool(str1) ^ bool(str2)

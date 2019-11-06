@@ -5,17 +5,30 @@ except ImportError:
     from distutils.core import setup
     from distutils.extension import Extension
 
-from Cython.Build import cythonize
+try:
+    from Cython.Distutils import build_ext
+except ImportError:
+    use_cython = False
+else:
+    use_cython = True
+
 import numpy, sys, os
 
 
+cmdclass = {}
+ext_modules = []
 
-
-
-ext_modules = [
-    Extension("Layout.core",  ["Layout/core.pyx"],include_dirs=[numpy.get_include()]),
-    Extension("Layout.layouts",  ["Layout/layouts.pyx"])
-]
+if use_cython:
+    ext_modules += [
+        Extension("Layout.core",  ["Layout/core.pyx"],include_dirs=[numpy.get_include()]),
+        Extension("Layout.layouts",  ["Layout/layouts.pyx"])
+    ]
+    cmdclass.update({'build_ext': build_ext})
+else:
+    ext_modules += [
+        Extension("Layout.core",  ["Layout/core.c"],include_dirs=[numpy.get_include()]),
+        Extension("Layout.layouts",  ["Layout/layouts.c"])
+    ]
 
 
 
@@ -30,13 +43,7 @@ setup(name='Layout',
           'matplotlib',
       ],
     packages=['Layout'],
-    py_modules = ['Layout.logger'],
-      #find_pyx(path='Layout/')
-    ext_modules=cythonize(ext_modules, language_level=sys.version_info[0])
-    # [
-    #     cythonize(Extension("Layout.core", ["Layout/core.pyx"],
-    #     include_dirs=[numpy.get_include()])
-	# #   ,library_dirs=['/usr/lib/python2.7']
-	# 	),
-   	# ]
+    py_modules=['Layout.logger'],
+    cmdclass=cmdclass,
+    ext_modules=ext_modules
 )

@@ -142,14 +142,6 @@ class Squares(Layout):
         self._grid = np.array(self._grid)
         self._angles = np.array(self._angles)
         self._rparts = np.sqrt(rsq)
-        
-     
-  
-    
-
-         
-
-
 
 class Hexagons(Layout):
     def __init__(self,radius, cellSize, resolution, center = None, gap = 0,verbose = True, checkOverlaps = True):
