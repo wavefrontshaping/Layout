@@ -1368,6 +1368,7 @@ static const char __pyx_k_res[] = "_res";
 static const char __pyx_k_rsq[] = "rsq";
 static const char __pyx_k_sin[] = "sin";
 static const char __pyx_k_axis[] = "axis";
+static const char __pyx_k_ceil[] = "ceil";
 static const char __pyx_k_core[] = "core";
 static const char __pyx_k_fill[] = "fill";
 static const char __pyx_k_grid[] = "_grid";
@@ -1526,6 +1527,7 @@ static PyObject *__pyx_n_s_array;
 static PyObject *__pyx_n_s_astype;
 static PyObject *__pyx_n_s_axis;
 static PyObject *__pyx_n_s_calculateSurfaces;
+static PyObject *__pyx_n_s_ceil;
 static PyObject *__pyx_n_s_cellSize;
 static PyObject *__pyx_n_s_cellSize_2;
 static PyObject *__pyx_n_s_center;
@@ -6684,7 +6686,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_6removeOneCol(CYTHON_UNUSED
  * 
  *     def getHexagonSegments(self):             # <<<<<<<<<<<<<<
  *         self.nParts = 0
- *         ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
+ *         ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))
  */
 
 /* Python wrapper */
@@ -6737,7 +6739,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_8getHexagonSegments(CYTHON_
  * 
  *     def getHexagonSegments(self):
  *         self.nParts = 0             # <<<<<<<<<<<<<<
- *         ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
+ *         ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))
  *         rsq = []
  */
   if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_nParts, __pyx_int_0) < 0) __PYX_ERR(0, 223, __pyx_L1_error)
@@ -6745,13 +6747,13 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_8getHexagonSegments(CYTHON_
   /* "Layout/layouts.pyx":224
  *     def getHexagonSegments(self):
  *         self.nParts = 0
- *         ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))             # <<<<<<<<<<<<<<
+ *         ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))             # <<<<<<<<<<<<<<
  *         rsq = []
  *         self._parts = []
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_floor); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_ceil); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_radius_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 224, __pyx_L1_error)
@@ -6783,7 +6785,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_8getHexagonSegments(CYTHON_
       __Pyx_DECREF_SET(__pyx_t_6, function);
     }
   }
-  __pyx_t_5 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_4, __pyx_int_3) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_int_3);
+  __pyx_t_5 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_4, __pyx_int_2) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_int_2);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
@@ -6816,7 +6818,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_8getHexagonSegments(CYTHON_
 
   /* "Layout/layouts.pyx":225
  *         self.nParts = 0
- *         ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
+ *         ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))
  *         rsq = []             # <<<<<<<<<<<<<<
  *         self._parts = []
  *         self._grid = []
@@ -6827,7 +6829,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_8getHexagonSegments(CYTHON_
   __pyx_t_3 = 0;
 
   /* "Layout/layouts.pyx":226
- *         ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
+ *         ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))
  *         rsq = []
  *         self._parts = []             # <<<<<<<<<<<<<<
  *         self._grid = []
@@ -8011,7 +8013,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_8getHexagonSegments(CYTHON_
  * 
  *     def getHexagonSegments(self):             # <<<<<<<<<<<<<<
  *         self.nParts = 0
- *         ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
+ *         ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))
  */
 
   /* function exit code */
@@ -11621,6 +11623,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_astype, __pyx_k_astype, sizeof(__pyx_k_astype), 0, 0, 1, 1},
   {&__pyx_n_s_axis, __pyx_k_axis, sizeof(__pyx_k_axis), 0, 0, 1, 1},
   {&__pyx_n_s_calculateSurfaces, __pyx_k_calculateSurfaces, sizeof(__pyx_k_calculateSurfaces), 0, 0, 1, 1},
+  {&__pyx_n_s_ceil, __pyx_k_ceil, sizeof(__pyx_k_ceil), 0, 0, 1, 1},
   {&__pyx_n_s_cellSize, __pyx_k_cellSize, sizeof(__pyx_k_cellSize), 0, 0, 1, 1},
   {&__pyx_n_s_cellSize_2, __pyx_k_cellSize_2, sizeof(__pyx_k_cellSize_2), 0, 0, 1, 1},
   {&__pyx_n_s_center, __pyx_k_center, sizeof(__pyx_k_center), 0, 0, 1, 1},
@@ -11860,7 +11863,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *     def getHexagonSegments(self):             # <<<<<<<<<<<<<<
  *         self.nParts = 0
- *         ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
+ *         ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))
  */
   __pyx_tuple__24 = PyTuple_Pack(12, __pyx_n_s_self, __pyx_n_s_ny_max, __pyx_n_s_rsq, __pyx_n_s_x_shift, __pyx_n_s_y_shift, __pyx_n_s_y, __pyx_n_s_ind, __pyx_n_s_add_shift, __pyx_n_s_nx_max, __pyx_n_s_x, __pyx_n_s_pos, __pyx_n_s_rsq_2); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__24);
@@ -12465,7 +12468,7 @@ if (!__Pyx_RefNanny) {
  * 
  *     def getHexagonSegments(self):             # <<<<<<<<<<<<<<
  *         self.nParts = 0
- *         ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
+ *         ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))
  */
   __pyx_t_4 = __Pyx_CyFunction_NewEx(&__pyx_mdef_6Layout_7layouts_8Hexagons_9getHexagonSegments, 0, __pyx_n_s_Hexagons_getHexagonSegments, NULL, __pyx_n_s_Layout_layouts, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);

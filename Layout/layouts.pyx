@@ -221,7 +221,8 @@ class Hexagons(Layout):
 
     def getHexagonSegments(self):
         self.nParts = 0
-        ny_max = int(np.floor(float(self._radius)/self._cellSize*2/np.sqrt(3)))
+        # FIX ME
+        ny_max = int(np.ceil(float(self._radius)/self._cellSize*2/np.sqrt(2)))
         rsq = []
         self._parts = []
         self._grid = []
