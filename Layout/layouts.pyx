@@ -1,9 +1,20 @@
 from .core import Layout
 from .logger import get_logger
 import numpy as np
+import math
+from matplotlib.path import Path
 import matplotlib.pyplot as plt
 
 logger = get_logger(__name__)
+
+def _scale_coordinates(generator, image_width, image_height, side_length, center, radius):
+    scaled_width = int(image_width / side_length) + 2
+    scaled_height = int(image_height / side_length) + 2
+    scaled_center = [c / side_length for c in center]
+    scaled_radius = radius / side_length
+
+    for pos,coords in generator(scaled_width, scaled_height, scaled_center, scaled_radius):
+        yield (pos[0]* side_length, pos[1]* side_length),[(x * side_length, y * side_length) for (x, y) in coords]
 
 def checkLine(p1, p2, shape):
     """
@@ -144,7 +155,14 @@ class Squares(Layout):
         self._rparts = np.sqrt(rsq)
 
 class Hexagons(Layout):
-    def __init__(self,radius, cellSize, resolution, center = None, gap = 0,verbose = True, checkOverlaps = True):
+    def __init__(self,radius, 
+                 cellSize, 
+                 resolution, 
+                 method = 'equal',
+                 center = None, 
+                 gap = 0,
+                 verbose = True, 
+                 checkOverlaps = True):
         
         Layout.__init__(self)  
         self._cellSize = cellSize
@@ -158,26 +176,33 @@ class Hexagons(Layout):
         else:
             self._center = center
 
-        logger.info('Creation of the hexagonal layout')
+        if method == 'equal':
+            logger.info('Creation of the hexagonal layout')
 
-        self._parts = []
+            self._parts = []
 
-        logger.debug('Creation of the hexagons and removal of the center column')
-        self.getHexagonCell()
-        self.removeOneCol()
+            logger.debug('Creation of the hexagons and removal of the center column')
+            self.getHexagonCell()
+            self.removeOneCol()
 
-        logger.debug('Setting up the grid')
-        self.getHexagonSegments()
+            logger.debug('Setting up the grid')
+            self.getHexagonSegments()
 
+             # We need to check that the segments do not overlap
+            if checkOverlaps and self.checkOverlaps():
+            
+                # We recompile the segments so that there is no overlap
+                # Small disparities in the segment surfaces arise
+                logger.debug('Removing overlaps')
+                self.removeOverlaps()
+
+        elif method == 'grid':
+
+            self._generate_parts_grid()
+        
         logger.info('-> Number of segments = %g' % self.nParts)
 
-        # We need to check that the segments do not overlap
-        if checkOverlaps and self.checkOverlaps():
-        
-            # We recompile the segments so that there is no overlap
-            # Small disparities in the segment surfaces arise
-            logger.debug('Removing overlaps')
-            self.removeOverlaps()
+       
                 
         self.calculateSurfaces()
         if self._gap == 0:
@@ -185,7 +210,73 @@ class Hexagons(Layout):
         
         logger.debug('Sorting segments accoring to distance from center (default)')
         self.sortSegments()
+
+    def _generate_unit_hexagons_grid(self, width, height, center, radius):
+        """Generate coordinates for a tiling of hexagons."""
+        h = math.sin(math.pi / 3)
+
+        # to ensure x = 0 exists
+        x_max = width//2+3-(width//2 % 3)
+        y_max = int(height / (2*h))
         
+        for x in range(-x_max, x_max + 1, 3):
+            
+            for y in range(-y_max, y_max + 1):
+                
+
+                # Add the horizontal offset on every other row
+                x_ = x if (y % 2 == 0) else x + 1.5
+                #x_ = x_ + (center[0] % 3)
+                #y = y + (center[1]*h % 1)
+
+                
+                if (x_**2+(y*h)**2 < radius**2):
+                    x_ += center[0]
+                    y_ = y + center[1]/h
+                    yield (x_,y_*h), \
+                    [
+                        (x_ - .5,   (y_-1) * h),
+                        (x_ + .5,   (y_-1) * h),
+                        (x_ + 1,     y_ * h),
+                        (x_ + .5,   (y_ + 1) * h),
+                        (x_ - .5,   (y_ + 1) * h),
+                        (x_ - 1,     y_ * h),
+                    ]
+    
+
+
+    def _generate_hexagons_mesh(self,*args, **kwargs):
+        """Generate coordinates for a tiling of hexagons."""
+        return _scale_coordinates(self._generate_unit_hexagons_grid, 
+                                  *args, 
+                                  image_width = self._res[0],
+                                  image_height = self._res[1],
+                                  side_length = self._cellSize/2,
+                                  center = self._center,
+                                  radius = self._radius,
+                                  **kwargs)
+            
+    def _generate_parts_grid(self): 
+        x, y = np.meshgrid(np.arange(self._res[1]), np.arange(self._res[0]))
+        x, y = x.flatten(), y.flatten()
+        
+        points = np.vstack((x,y)).T
+        
+        self._grid = np.array([])
+        self._rparts = np.array([])
+        self._angles = np.array([])
+
+        
+        for ind,(pos,shape) in enumerate(self._generate_hexagons_mesh()):
+            mask = Path(shape).contains_points(points)
+            self._grid = np.append(self._grid,[pos])
+            self._parts.append(np.array(np.where(mask.reshape(self._res))).transpose())
+            #self._angles.append(np.arctan2(pos[0]-self._center[0],pos[1]-self._center[1]))
+            self._angles = np.append(self._angles,[np.arctan2(pos[0]-self._center[0],pos[1]-self._center[1])])
+            #self._rparts.append(np.sqrt((pos[0]-self._center[0])**2+(pos[1]-self._center[1])**2))
+            self._rparts = np.append(self._rparts, np.sqrt((pos[0]-self._center[0])**2+(pos[1]-self._center[1])**2))
+
+        self.nParts = ind+1 
               
     def getSurface(self):
         return self._surfaces
@@ -202,17 +293,17 @@ class Hexagons(Layout):
         # First one
         vertices = [ [cellSize//2+r*np.cos(a),cellSize//2+r*np.sin(a)] for a in angles]
 #        self._firstHex.append(createPolygon(self._resCell,vertices))
-        self._oneHex = np.argwhere(createPolygon(self._resCell,vertices)).astype(int)
+        self._oneCell = np.argwhere(createPolygon(self._resCell,vertices)).astype(int)
 
-        return self._oneHex
+        return self._oneCell
 
     def removeOneCol(self):
         '''
         Removes the center column of self.oneHex
         '''
-        center = int(np.max(self._oneHex[:,1]) / 2)
-        singleHex = [[duo[0],duo[1]-(np.sign(duo[1]-center)+1)/2] for duo in self._oneHex if duo[1] != center]
-        self._oneHex = np.array(singleHex)
+        center = int(np.max(self._oneCell[:,1]) / 2)
+        singleHex = [[duo[0],duo[1]-(np.sign(duo[1]-center)+1)/2] for duo in self._oneCell if duo[1] != center]
+        self._oneCell = np.array(singleHex)
         
         
         
@@ -245,7 +336,7 @@ class Hexagons(Layout):
                 pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift )]
                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
                 if (_rsq <= self._radius**2):
-                    self._parts.append((self._oneHex+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
+                    self._parts.append((self._oneCell+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
                     self._grid.append(pos)
                     self.nParts += 1
                     rsq.append(_rsq)
@@ -324,7 +415,7 @@ class Diamonds(Layout):
         self._firstHex = []
         # First one
         vertices = [ [cellSize//2+r*np.cos(a),cellSize//2+r*np.sin(a)] for a in angles]
-        self._oneHex = np.argwhere(createPolygon(self._resCell,vertices)).astype(int)
+        self._oneCell = np.argwhere(createPolygon(self._resCell,vertices)).astype(int)
 
         
 
@@ -361,7 +452,7 @@ class Diamonds(Layout):
                 pos = [int(self._center[0]+x*x_shift+add_shift),int(self._center[1]+y*y_shift)] # Warning, x and y and inverted, as they are in many parts of this code.
                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
                 if (_rsq <= self._radius**2):
-                    self._parts.append((self._oneHex+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
+                    self._parts.append((self._oneCell+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
                     self._grid.append(pos)
                     self.nParts += 1
                     rsq.append(_rsq)

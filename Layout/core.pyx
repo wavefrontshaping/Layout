@@ -33,8 +33,6 @@ class Layout:
         self._pos_vec = []
         self._surfaces = None
         
-
-
     def getMaskFromImage(self, complex_pattern, leePeriod = 1, angle = 0):
         '''
         Generate a binary amplitude mask from a complex image of the sime size as the full Layout.
@@ -292,7 +290,7 @@ class Layout:
             return self._grid[vec]
         else:
             return self._grid
-    def sortSegments(self,order='dist2center',rearrange = True):
+    def sortSegments(self,order='dist2center', rearrange = True):
         '''
         Sort the segment with respect to the chosen criteria.
         Returns the index list of the sorted elements.
@@ -302,7 +300,7 @@ class Layout:
         order : string, optional
             Sorting criteria, can take following values:
             - 'dist2center' :  Sorts the elements by there distance to the center of the figure (default).
-            - 'angle' : Sorts the elements by there angular position.
+            - 'angles' : Sorts the elements by there angular position.
             - 'random' : Randomly shuffles the elements.
 
         rearrange : bool, optional
