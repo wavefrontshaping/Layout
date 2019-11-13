@@ -333,7 +333,10 @@ class Layout:
         Display the layout, shows each cell in a different color.
         '''
         pattern = self.getImageFromVec(np.arange(10,10+self.nParts), dtype = float)
-        plt.figure();plt.imshow(pattern);plt.colorbar()
+        plt.figure()
+        plt.imshow(pattern)
+        plt.show()
+        plt.colorbar()
 
     def calculateSurfaces(self):
         self._surfaces = []
