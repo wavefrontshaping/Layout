@@ -8125,13 +8125,13 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_11_get_equal_hexagon_segmen
       /* "Layout/layouts.pyx":218
  *                 # The -np.sign(x)*x was added to compensate the previously odd hexagon size
  *                 # pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift - np.sign(x)*x)]
- *                 pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift )]             # <<<<<<<<<<<<<<
- *                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
+ *                 pos = [int(self._center[1]+x*x_shift+add_shift ),int(self._center[0]+y*y_shift )]             # <<<<<<<<<<<<<<
+ *                 _rsq = (pos[0]-self._center[1])**2 +  (pos[1]-self._center[0])**2
  *                 if (_rsq <= self._radius**2):
  */
       __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_center_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = PyNumber_Multiply(__pyx_v_x, __pyx_v_x_shift); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L1_error)
@@ -8148,7 +8148,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_11_get_equal_hexagon_segmen
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_center_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = PyNumber_Multiply(__pyx_v_y, __pyx_v_y_shift); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L1_error)
@@ -8173,8 +8173,8 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_11_get_equal_hexagon_segmen
 
       /* "Layout/layouts.pyx":219
  *                 # pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift - np.sign(x)*x)]
- *                 pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift )]
- *                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2             # <<<<<<<<<<<<<<
+ *                 pos = [int(self._center[1]+x*x_shift+add_shift ),int(self._center[0]+y*y_shift )]
+ *                 _rsq = (pos[0]-self._center[1])**2 +  (pos[1]-self._center[0])**2             # <<<<<<<<<<<<<<
  *                 if (_rsq <= self._radius**2):
  *                     self._parts.append((self._oneCell+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
  */
@@ -8182,7 +8182,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_11_get_equal_hexagon_segmen
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_center_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 219, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 219, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
@@ -8196,7 +8196,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_11_get_equal_hexagon_segmen
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_center_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 219, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 219, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_1 = PyNumber_Subtract(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
@@ -8214,8 +8214,8 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_11_get_equal_hexagon_segmen
       __pyx_t_1 = 0;
 
       /* "Layout/layouts.pyx":220
- *                 pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift )]
- *                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
+ *                 pos = [int(self._center[1]+x*x_shift+add_shift ),int(self._center[0]+y*y_shift )]
+ *                 _rsq = (pos[0]-self._center[1])**2 +  (pos[1]-self._center[0])**2
  *                 if (_rsq <= self._radius**2):             # <<<<<<<<<<<<<<
  *                     self._parts.append((self._oneCell+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
  *                     self._grid.append(pos)
@@ -8232,7 +8232,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_11_get_equal_hexagon_segmen
       if (__pyx_t_10) {
 
         /* "Layout/layouts.pyx":221
- *                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
+ *                 _rsq = (pos[0]-self._center[1])**2 +  (pos[1]-self._center[0])**2
  *                 if (_rsq <= self._radius**2):
  *                     self._parts.append((self._oneCell+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))             # <<<<<<<<<<<<<<
  *                     self._grid.append(pos)
@@ -8448,8 +8448,8 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons_11_get_equal_hexagon_segmen
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
         /* "Layout/layouts.pyx":220
- *                 pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift )]
- *                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
+ *                 pos = [int(self._center[1]+x*x_shift+add_shift ),int(self._center[0]+y*y_shift )]
+ *                 _rsq = (pos[0]-self._center[1])**2 +  (pos[1]-self._center[0])**2
  *                 if (_rsq <= self._radius**2):             # <<<<<<<<<<<<<<
  *                     self._parts.append((self._oneCell+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
  *                     self._grid.append(pos)

@@ -215,8 +215,8 @@ class Hexagons(Layout):
             for x in np.arange(-nx_max-1,nx_max+1):
                 # The -np.sign(x)*x was added to compensate the previously odd hexagon size
                 # pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift - np.sign(x)*x)]
-                pos = [int(self._center[0]+x*x_shift+add_shift ),int(self._center[1]+y*y_shift )]
-                _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
+                pos = [int(self._center[1]+x*x_shift+add_shift ),int(self._center[0]+y*y_shift )]
+                _rsq = (pos[0]-self._center[1])**2 +  (pos[1]-self._center[0])**2
                 if (_rsq <= self._radius**2):
                     self._parts.append((self._oneCell+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
                     self._grid.append(pos)
