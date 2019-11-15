@@ -14,7 +14,6 @@ import itertools
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from cpython cimport array
 import array
-from random import shuffle
 
 from .logger import get_logger
 
@@ -317,8 +316,7 @@ class Layout:
         elif order == 'angles':
             idx = np.array(self._angles).argsort().astype(int)
         elif order == 'random':
-            idx = range(self.nParts)
-            shuffle(idx)    
+            idx = np.random.permutation(np.arange(self.nParts))  
         else:
             raise ValueError('Invalid sorting order argument.')
         if rearrange:
