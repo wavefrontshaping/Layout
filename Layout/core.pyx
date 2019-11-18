@@ -14,8 +14,21 @@ import itertools
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from cpython cimport array
 import array
+import logging
 
-from .logger import get_logger
+
+def get_logger(name):
+        loglevel = logging.DEBUG
+        logger = logging.getLogger(name)
+        if not getattr(logger, 'handler_set', None):
+            logger.setLevel(logging.INFO)
+            logFormatter = logging.Formatter("%(asctime)s - %(name)-10.10s [%(levelname)-7.7s]  %(message)s") #[%(threadName)-12.12s] 
+            consoleHandler = logging.StreamHandler()
+            consoleHandler.setFormatter(logFormatter)
+            logger.addHandler(consoleHandler)
+            logger.setLevel(loglevel)
+            logger.handler_set = True
+        return logger
 
 # the Layout class displays messages in a logging fashion. Output should be directed into logs and stdout in the main program.
 # most messages are at DEBUG level, thus you can prevent their display by setting the threshold higher. 

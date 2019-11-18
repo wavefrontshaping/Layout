@@ -15688,7 +15688,7 @@ if (!__Pyx_RefNanny) {
 
   /* "Layout/layouts.pyx":1
  * from .core import Layout             # <<<<<<<<<<<<<<
- * from .logger import get_logger
+ * from .core import get_logger
  * import numpy as np
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -15707,7 +15707,7 @@ if (!__Pyx_RefNanny) {
 
   /* "Layout/layouts.pyx":2
  * from .core import Layout
- * from .logger import get_logger             # <<<<<<<<<<<<<<
+ * from .core import get_logger             # <<<<<<<<<<<<<<
  * import numpy as np
  * import math
  */
@@ -15716,7 +15716,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_get_logger);
   __Pyx_GIVEREF(__pyx_n_s_get_logger);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_get_logger);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_logger, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_core, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_get_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
@@ -15727,7 +15727,7 @@ if (!__Pyx_RefNanny) {
 
   /* "Layout/layouts.pyx":3
  * from .core import Layout
- * from .logger import get_logger
+ * from .core import get_logger
  * import numpy as np             # <<<<<<<<<<<<<<
  * import math
  * from matplotlib.path import Path
@@ -15738,7 +15738,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "Layout/layouts.pyx":4
- * from .logger import get_logger
+ * from .core import get_logger
  * import numpy as np
  * import math             # <<<<<<<<<<<<<<
  * from matplotlib.path import Path
@@ -16176,7 +16176,7 @@ if (!__Pyx_RefNanny) {
 
   /* "Layout/layouts.pyx":1
  * from .core import Layout             # <<<<<<<<<<<<<<
- * from .logger import get_logger
+ * from .core import get_logger
  * import numpy as np
  */
   __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1, __pyx_L1_error)
