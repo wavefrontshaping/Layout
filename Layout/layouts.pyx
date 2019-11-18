@@ -1,5 +1,5 @@
-from Layout.core import Layout
-from Layout.logger import get_logger
+from .core import Layout
+from .logger import get_logger
 import numpy as np
 import math
 from matplotlib.path import Path

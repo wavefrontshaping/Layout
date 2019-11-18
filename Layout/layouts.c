@@ -1615,6 +1615,7 @@ static const char __pyx_k_y_2[] = "y_";
 static const char __pyx_k_Path[] = "Path";
 static const char __pyx_k_args[] = "args";
 static const char __pyx_k_ceil[] = "ceil";
+static const char __pyx_k_core[] = "core";
 static const char __pyx_k_file[] = "file";
 static const char __pyx_k_grid[] = "_grid";
 static const char __pyx_k_info[] = "info";
@@ -1707,13 +1708,11 @@ static const char __pyx_k_cellSize_2[] = "_cellSize";
 static const char __pyx_k_getSurface[] = "getSurface";
 static const char __pyx_k_get_logger[] = "get_logger";
 static const char __pyx_k_resolution[] = "resolution";
-static const char __pyx_k_Layout_core[] = "Layout.core";
 static const char __pyx_k_image_width[] = "image_width";
 static const char __pyx_k_side_length[] = "side_length";
 static const char __pyx_k_image_height[] = "image_height";
 static const char __pyx_k_scaled_width[] = "scaled_width";
 static const char __pyx_k_sortSegments[] = "sortSegments";
-static const char __pyx_k_Layout_logger[] = "Layout.logger";
 static const char __pyx_k_checkOverlaps[] = "checkOverlaps";
 static const char __pyx_k_createPolygon[] = "createPolygon";
 static const char __pyx_k_getSquareCell[] = "getSquareCell";
@@ -1782,10 +1781,8 @@ static PyObject *__pyx_n_s_Hexagons__generate_unit_hexagons;
 static PyObject *__pyx_n_s_Hexagons__get_equal_hexagon_segm;
 static PyObject *__pyx_n_s_Hexagons_getSurface;
 static PyObject *__pyx_n_s_Layout;
-static PyObject *__pyx_n_s_Layout_core;
 static PyObject *__pyx_n_s_Layout_layouts;
 static PyObject *__pyx_kp_s_Layout_layouts_pyx;
-static PyObject *__pyx_n_s_Layout_logger;
 static PyObject *__pyx_kp_s_Maximum_relative_variation_of_s;
 static PyObject *__pyx_kp_s_Number_of_segments_g;
 static PyObject *__pyx_n_s_Path;
@@ -1832,6 +1829,7 @@ static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_contains_points;
 static PyObject *__pyx_n_s_coords;
+static PyObject *__pyx_n_s_core;
 static PyObject *__pyx_n_s_cos;
 static PyObject *__pyx_n_s_createPolygon;
 static PyObject *__pyx_n_s_debug;
@@ -14949,10 +14947,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Hexagons__get_equal_hexagon_segm, __pyx_k_Hexagons__get_equal_hexagon_segm, sizeof(__pyx_k_Hexagons__get_equal_hexagon_segm), 0, 0, 1, 1},
   {&__pyx_n_s_Hexagons_getSurface, __pyx_k_Hexagons_getSurface, sizeof(__pyx_k_Hexagons_getSurface), 0, 0, 1, 1},
   {&__pyx_n_s_Layout, __pyx_k_Layout, sizeof(__pyx_k_Layout), 0, 0, 1, 1},
-  {&__pyx_n_s_Layout_core, __pyx_k_Layout_core, sizeof(__pyx_k_Layout_core), 0, 0, 1, 1},
   {&__pyx_n_s_Layout_layouts, __pyx_k_Layout_layouts, sizeof(__pyx_k_Layout_layouts), 0, 0, 1, 1},
   {&__pyx_kp_s_Layout_layouts_pyx, __pyx_k_Layout_layouts_pyx, sizeof(__pyx_k_Layout_layouts_pyx), 0, 0, 1, 0},
-  {&__pyx_n_s_Layout_logger, __pyx_k_Layout_logger, sizeof(__pyx_k_Layout_logger), 0, 0, 1, 1},
   {&__pyx_kp_s_Maximum_relative_variation_of_s, __pyx_k_Maximum_relative_variation_of_s, sizeof(__pyx_k_Maximum_relative_variation_of_s), 0, 0, 1, 0},
   {&__pyx_kp_s_Number_of_segments_g, __pyx_k_Number_of_segments_g, sizeof(__pyx_k_Number_of_segments_g), 0, 0, 1, 0},
   {&__pyx_n_s_Path, __pyx_k_Path, sizeof(__pyx_k_Path), 0, 0, 1, 1},
@@ -15003,6 +14999,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_contains_points, __pyx_k_contains_points, sizeof(__pyx_k_contains_points), 0, 0, 1, 1},
   {&__pyx_n_s_coords, __pyx_k_coords, sizeof(__pyx_k_coords), 0, 0, 1, 1},
+  {&__pyx_n_s_core, __pyx_k_core, sizeof(__pyx_k_core), 0, 0, 1, 1},
   {&__pyx_n_s_cos, __pyx_k_cos, sizeof(__pyx_k_cos), 0, 0, 1, 1},
   {&__pyx_n_s_createPolygon, __pyx_k_createPolygon, sizeof(__pyx_k_createPolygon), 0, 0, 1, 1},
   {&__pyx_n_s_debug, __pyx_k_debug, sizeof(__pyx_k_debug), 0, 0, 1, 1},
@@ -15690,8 +15687,8 @@ if (!__Pyx_RefNanny) {
   #endif
 
   /* "Layout/layouts.pyx":1
- * from Layout.core import Layout             # <<<<<<<<<<<<<<
- * from Layout.logger import get_logger
+ * from .core import Layout             # <<<<<<<<<<<<<<
+ * from .logger import get_logger
  * import numpy as np
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -15699,7 +15696,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_Layout);
   __Pyx_GIVEREF(__pyx_n_s_Layout);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Layout);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_Layout_core, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_core, __pyx_t_1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Layout); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -15709,8 +15706,8 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "Layout/layouts.pyx":2
- * from Layout.core import Layout
- * from Layout.logger import get_logger             # <<<<<<<<<<<<<<
+ * from .core import Layout
+ * from .logger import get_logger             # <<<<<<<<<<<<<<
  * import numpy as np
  * import math
  */
@@ -15719,7 +15716,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_get_logger);
   __Pyx_GIVEREF(__pyx_n_s_get_logger);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_get_logger);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_Layout_logger, __pyx_t_2, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_logger, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_get_logger); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
@@ -15729,8 +15726,8 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "Layout/layouts.pyx":3
- * from Layout.core import Layout
- * from Layout.logger import get_logger
+ * from .core import Layout
+ * from .logger import get_logger
  * import numpy as np             # <<<<<<<<<<<<<<
  * import math
  * from matplotlib.path import Path
@@ -15741,7 +15738,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "Layout/layouts.pyx":4
- * from Layout.logger import get_logger
+ * from .logger import get_logger
  * import numpy as np
  * import math             # <<<<<<<<<<<<<<
  * from matplotlib.path import Path
@@ -16178,8 +16175,8 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "Layout/layouts.pyx":1
- * from Layout.core import Layout             # <<<<<<<<<<<<<<
- * from Layout.logger import get_logger
+ * from .core import Layout             # <<<<<<<<<<<<<<
+ * from .logger import get_logger
  * import numpy as np
  */
   __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1, __pyx_L1_error)
