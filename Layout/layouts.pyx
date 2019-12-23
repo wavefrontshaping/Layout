@@ -88,7 +88,7 @@ class Hexagons(Layout):
         self._gap = gap
         
         if center == None:
-            self._center = [float(self._res[0]-1.)/2,float(self._res[1]-1.)/2]
+            self._center = [float(self._res[1]-1.)/2,float(self._res[0]-1.)/2]
         else:
             self._center = center
 
@@ -143,8 +143,8 @@ class Hexagons(Layout):
                 # Add the horizontal offset on every other row
                 x_ = x if (y % 2 == 0) else x + 1.5   
                 if (x_**2+(y*h)**2 < radius**2):
-                    x_ += center[0]
-                    y_ = y + center[1]/h
+                    x_ += center[1]
+                    y_ = y + center[0]/h
                     yield (x_,y_*h), _one_hexagon_path(x_,y_)
   
 

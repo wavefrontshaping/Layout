@@ -4656,7 +4656,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons___init__(CYTHON_UNUSED PyOb
  *         self._gap = gap
  * 
  *         if center == None:             # <<<<<<<<<<<<<<
- *             self._center = [float(self._res[0]-1.)/2,float(self._res[1]-1.)/2]
+ *             self._center = [float(self._res[1]-1.)/2,float(self._res[0]-1.)/2]
  *         else:
  */
   __pyx_t_1 = PyObject_RichCompare(__pyx_v_center, Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
@@ -4667,13 +4667,13 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons___init__(CYTHON_UNUSED PyOb
     /* "Layout/layouts.pyx":91
  * 
  *         if center == None:
- *             self._center = [float(self._res[0]-1.)/2,float(self._res[1]-1.)/2]             # <<<<<<<<<<<<<<
+ *             self._center = [float(self._res[1]-1.)/2,float(self._res[0]-1.)/2]             # <<<<<<<<<<<<<<
  *         else:
  *             self._center = center
  */
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_res); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_1, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyFloat_SubtractObjC(__pyx_t_3, __pyx_float_1_, 1., 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
@@ -4685,7 +4685,7 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons___init__(CYTHON_UNUSED PyOb
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_res); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_3, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = __Pyx_PyFloat_SubtractObjC(__pyx_t_2, __pyx_float_1_, 1., 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
@@ -4710,14 +4710,14 @@ static PyObject *__pyx_pf_6Layout_7layouts_8Hexagons___init__(CYTHON_UNUSED PyOb
  *         self._gap = gap
  * 
  *         if center == None:             # <<<<<<<<<<<<<<
- *             self._center = [float(self._res[0]-1.)/2,float(self._res[1]-1.)/2]
+ *             self._center = [float(self._res[1]-1.)/2,float(self._res[0]-1.)/2]
  *         else:
  */
     goto __pyx_L3;
   }
 
   /* "Layout/layouts.pyx":93
- *             self._center = [float(self._res[0]-1.)/2,float(self._res[1]-1.)/2]
+ *             self._center = [float(self._res[1]-1.)/2,float(self._res[0]-1.)/2]
  *         else:
  *             self._center = center             # <<<<<<<<<<<<<<
  * 
@@ -5730,7 +5730,7 @@ static PyObject *__pyx_gb_6Layout_7layouts_8Hexagons_4generator1(__pyx_Coroutine
  *                 # Add the horizontal offset on every other row
  *                 x_ = x if (y % 2 == 0) else x + 1.5             # <<<<<<<<<<<<<<
  *                 if (x_**2+(y*h)**2 < radius**2):
- *                     x_ += center[0]
+ *                     x_ += center[1]
  */
       __pyx_t_2 = __Pyx_PyInt_RemainderObjC(__pyx_cur_scope->__pyx_v_y, __pyx_int_2, 2, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
@@ -5757,8 +5757,8 @@ static PyObject *__pyx_gb_6Layout_7layouts_8Hexagons_4generator1(__pyx_Coroutine
  *                 # Add the horizontal offset on every other row
  *                 x_ = x if (y % 2 == 0) else x + 1.5
  *                 if (x_**2+(y*h)**2 < radius**2):             # <<<<<<<<<<<<<<
- *                     x_ += center[0]
- *                     y_ = y + center[1]/h
+ *                     x_ += center[1]
+ *                     y_ = y + center[0]/h
  */
       __pyx_t_1 = PyNumber_Power(__pyx_cur_scope->__pyx_v_x_, __pyx_int_2, Py_None); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
@@ -5783,11 +5783,11 @@ static PyObject *__pyx_gb_6Layout_7layouts_8Hexagons_4generator1(__pyx_Coroutine
         /* "Layout/layouts.pyx":146
  *                 x_ = x if (y % 2 == 0) else x + 1.5
  *                 if (x_**2+(y*h)**2 < radius**2):
- *                     x_ += center[0]             # <<<<<<<<<<<<<<
- *                     y_ = y + center[1]/h
+ *                     x_ += center[1]             # <<<<<<<<<<<<<<
+ *                     y_ = y + center[0]/h
  *                     yield (x_,y_*h), _one_hexagon_path(x_,y_)
  */
-        __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_center, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_center, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_2 = PyNumber_InPlaceAdd(__pyx_cur_scope->__pyx_v_x_, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
@@ -5799,12 +5799,12 @@ static PyObject *__pyx_gb_6Layout_7layouts_8Hexagons_4generator1(__pyx_Coroutine
 
         /* "Layout/layouts.pyx":147
  *                 if (x_**2+(y*h)**2 < radius**2):
- *                     x_ += center[0]
- *                     y_ = y + center[1]/h             # <<<<<<<<<<<<<<
+ *                     x_ += center[1]
+ *                     y_ = y + center[0]/h             # <<<<<<<<<<<<<<
  *                     yield (x_,y_*h), _one_hexagon_path(x_,y_)
  * 
  */
-        __pyx_t_2 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_center, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 147, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_center, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_1 = __Pyx_PyNumber_Divide(__pyx_t_2, __pyx_cur_scope->__pyx_v_h); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
@@ -5818,8 +5818,8 @@ static PyObject *__pyx_gb_6Layout_7layouts_8Hexagons_4generator1(__pyx_Coroutine
         __pyx_t_2 = 0;
 
         /* "Layout/layouts.pyx":148
- *                     x_ += center[0]
- *                     y_ = y + center[1]/h
+ *                     x_ += center[1]
+ *                     y_ = y + center[0]/h
  *                     yield (x_,y_*h), _one_hexagon_path(x_,y_)             # <<<<<<<<<<<<<<
  * 
  * 
@@ -5922,8 +5922,8 @@ static PyObject *__pyx_gb_6Layout_7layouts_8Hexagons_4generator1(__pyx_Coroutine
  *                 # Add the horizontal offset on every other row
  *                 x_ = x if (y % 2 == 0) else x + 1.5
  *                 if (x_**2+(y*h)**2 < radius**2):             # <<<<<<<<<<<<<<
- *                     x_ += center[0]
- *                     y_ = y + center[1]/h
+ *                     x_ += center[1]
+ *                     y_ = y + center[0]/h
  */
       }
 
