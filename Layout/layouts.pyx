@@ -17,8 +17,6 @@ def _scale_coordinates(generator, image_width, image_height, side_length, center
         yield (pos[0]* side_length, pos[1]* side_length),[(x * side_length, y * side_length) for (x, y) in coords]
 
 def createPolygon(shape, vertices):
-    print('*'*10)
-    print(shape)
     x, y = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]))
     x, y = x.flatten(), y.flatten()
     points = np.vstack((x,y)).T
@@ -90,7 +88,7 @@ class Hexagons(Layout):
         if center == None:
             self._center = [float(self._res[1]-1.)/2,float(self._res[0]-1.)/2]
         else:
-            self._center = center
+            self._center = [center[1],center[0]]
 
         if method == 'equal':
             logger.info('Creation of the hexagonal layout')
@@ -143,8 +141,8 @@ class Hexagons(Layout):
                 # Add the horizontal offset on every other row
                 x_ = x if (y % 2 == 0) else x + 1.5   
                 if (x_**2+(y*h)**2 < radius**2):
-                    x_ += center[1]
-                    y_ = y + center[0]/h
+                    x_ += center[0]
+                    y_ = y + center[1]/h
                     yield (x_,y_*h), _one_hexagon_path(x_,y_)
   
 
@@ -247,9 +245,6 @@ class Squares(Layout):
         
         if verbose:
             logger.info('Creation of hexagonal layout.')
-#        print('Setting up the grid.')
-#        self.setupGrid()
-#        print('Creation of the hexagons.' )
         self._parts = []
         if verbose:
             logger.info('Creation of the hexagons.' )
@@ -259,10 +254,6 @@ class Squares(Layout):
         self.getSquareSegments()
         if verbose:
             logger.info(('-> Number of segments = %g' % self.nParts))
-#        self.getFirstHexagons()
-#        self.drawHexagons()
-#        self.getHexagons()
-#        self.checkOverlaps()
         # If no gap, we need to check that the segments do not overlap
         # We recompile the segments so that there is no overlap
         # Small disparities in the segment surfaces arise
@@ -315,7 +306,6 @@ class Squares(Layout):
                 nx_max = int(np.floor(np.sqrt((float(self._radius)/y_shift)**2-y**2)))
             else:
                 nx_max = 2
-#            print '<<', nx_max, ny_max, '>>'
             for x in np.arange(-nx_max-1,nx_max+1):
                 pos = [int(self._center[0]+x*x_shift+add_shift),int(self._center[1]+y*y_shift)]
                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
@@ -424,7 +414,6 @@ class Diamonds(Layout):
                 nx_max = int(np.floor(np.sqrt((float(self._radius)/y_shift)**2-y**2)))
             else:
                 nx_max = 2
-#            print '<<', nx_max, ny_max, '>>'
             for x in np.arange(-nx_max-1,nx_max+1):
                 pos = [int(self._center[0]+x*x_shift+add_shift),int(self._center[1]+y*y_shift)] # Warning, x and y and inverted, as they are in many parts of this code.
                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
