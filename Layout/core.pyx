@@ -37,6 +37,27 @@ logger = get_logger(__name__)
 def logical_xor(str1, str2):
     return bool(str1) ^ bool(str2)
 
+
+def fromFile(file_path):
+    '''
+    Return a Layout object created from a saved file.
+    
+    Parameters
+    ----------
+    file_path : string
+        Path of the saved file corresponding to the Layout object to load.
+        
+    Returns
+    -------
+    layout : Layout
+        The loaded Layout object.
+    
+    '''
+    layout = Layout()
+    data = np.load(file_path)
+    layout.__dict__.update(dict(data))
+    return layout
+
 class Layout:
     def __init__(self):
         self._parts = []
@@ -44,6 +65,17 @@ class Layout:
         self._res = [0,0]
         self._pos_vec = []
         self._surfaces = None
+        
+    def saveToFile(self, file_path):
+        '''
+        Save the current state of the Layout to a .npz file (it uses numpy.savez)
+
+        Parameters
+        ----------
+        file_path : string
+            Path of the file to save the Layout object to.
+        '''
+        np.savez(file_path, **self.__dict__)
         
     def getMaskFromImage(self, complex_pattern, leePeriod = 1, angle = 0):
         '''

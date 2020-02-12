@@ -29,7 +29,7 @@ else:
         Extension("Layout.core",  ["Layout/core.c"],include_dirs=[numpy.get_include()]),
         Extension("Layout.layouts",  ["Layout/layouts.c"])
     ]
-
+# ext_modules += [Extension('Layout.logger',  ["Layout/logger.py"])]
 
 
 setup(name='Layout',
@@ -42,8 +42,9 @@ setup(name='Layout',
           'numpy',
           'matplotlib',
       ],
+    # packages_dir={'Layout':['Layout']},
     packages=['Layout'],
-    py_modules=['Layout.logger'],
+    # py_modules=['Layout.logger'],
     cmdclass=cmdclass,
     ext_modules=ext_modules
 )

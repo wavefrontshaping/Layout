@@ -1,1 +1,2 @@
-from .layouts import Diamonds, Squares, Hexagons
+from .layouts import Diamonds, Squares, Hexagons, Pie
+from .core import fromFile
