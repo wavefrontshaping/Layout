@@ -54,7 +54,7 @@ def fromFile(file_path):
     
     '''
     layout = Layout()
-    data = np.load(file_path)
+    data = np.load(file_path,  allow_pickle = True)
     layout.__dict__.update(dict(data))
     return layout
 
