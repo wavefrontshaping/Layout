@@ -37,4 +37,4 @@ python setup.py install
 
 ## Presentation and example
 
-Please read our short presentation of the module on [wavefrontshaping.net]() and see our Jupyter notebook example codes [here](https://github.com/wavefrontshaping/WFS.net/tree/master/Layout).
+Please read our short presentation of the module on [https://wavefrontshaping.net]() and see our Jupyter notebook example codes [here](https://github.com/wavefrontshaping/WFS.net/tree/master/Layout).
