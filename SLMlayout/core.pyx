@@ -2,6 +2,11 @@
 """
 Created on Thu Oct 13 14:41:53 2016
 
+core.py
+============================
+The core module of SLMlayout
+
+
 @author: S.M. Popoff, M.W. Matthes
 """
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
@@ -11,6 +16,7 @@ cimport numpy as np
 import matplotlib.pyplot as plt
 import ctypes as ct
 import itertools 
+from matplotlib.path import Path
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from cpython cimport array
 import array
@@ -22,7 +28,7 @@ def get_logger(name):
         logger = logging.getLogger(name)
         if not getattr(logger, 'handler_set', None):
             logger.setLevel(logging.INFO)
-            logFormatter = logging.Formatter("%(asctime)s - %(name)-10.10s [%(levelname)-7.7s]  %(message)s") #[%(threadName)-12.12s] 
+            logFormatter = logging.Formatter("%(asctime)s - %(name)-18.18s [%(levelname)-7.7s]  %(message)s") #[%(threadName)-12.12s] 
             consoleHandler = logging.StreamHandler()
             consoleHandler.setFormatter(logFormatter)
             logger.addHandler(consoleHandler)
@@ -36,6 +42,29 @@ logger = get_logger(__name__)
 
 def logical_xor(str1, str2):
     return bool(str1) ^ bool(str2)
+
+
+def createPolygon(shape, vertices):
+    x, y = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]))
+    x, y = x.flatten(), y.flatten()
+    points = np.vstack((x,y)).T
+    mask = Path(vertices).contains_points(points)
+    return mask.reshape(shape)
+
+def one_polygon_vertices(x,y,radius,sides):
+    angles = np.linspace(-np.pi/2, -2.5*np.pi,sides, endpoint=False)+np.pi/2
+    # angles = np.arange(-np.pi/2,-2.5*np.pi,-np.pi/3)+np.pi/2
+    # print(angles-angles2)
+    return [ [x+radius*np.cos(a),y+radius*np.sin(a)] for a in angles]
+
+def scale_coordinates(generator, image_width, image_height, side_length, center, radius):
+    scaled_width = int(image_width / side_length) + 2
+    scaled_height = int(image_height / side_length) + 2
+    scaled_center = [c / side_length for c in center]
+    scaled_radius = radius / side_length
+
+    for pos,coords in generator(scaled_width, scaled_height, scaled_center, scaled_radius):
+        yield (pos[0]* side_length, pos[1]* side_length),[(x * side_length, y * side_length) for (x, y) in coords]
 
 
 def fromFile(file_path):
@@ -59,6 +88,11 @@ def fromFile(file_path):
     return layout
 
 class Layout:
+    '''
+    The Layout super class.
+    Contains the standard methods to generate mask from a vector
+    and to handle the segments.
+    '''
     def __init__(self):
         self._parts = []
         self.nParts = 0

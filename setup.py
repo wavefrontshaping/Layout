@@ -20,19 +20,15 @@ ext_modules = []
 
 if use_cython:
     ext_modules += [
-        Extension("Layout.core",  ["Layout/core.pyx"],include_dirs=[numpy.get_include()]),
-        Extension("Layout.layouts",  ["Layout/layouts.pyx"])
+        Extension("SLMlayout.core",  ["SLMlayout/core.pyx"],include_dirs=[numpy.get_include()]),
     ]
     cmdclass.update({'build_ext': build_ext})
 else:
     ext_modules += [
-        Extension("Layout.core",  ["Layout/core.c"],include_dirs=[numpy.get_include()]),
-        Extension("Layout.layouts",  ["Layout/layouts.c"])
+        Extension("SLMlayout.core",  ["SLMlayout/core.c"],include_dirs=[numpy.get_include()]),
     ]
-# ext_modules += [Extension('Layout.logger',  ["Layout/logger.py"])]
 
-
-setup(name='Layout',
+setup(name='SLMlayout',
     version='0.2',
     setup_requires=[
           'setuptools>=18.0',
@@ -41,10 +37,10 @@ setup(name='Layout',
     install_requires=[
           'numpy',
           'matplotlib',
+          'sphinx',
+          'sphinx_rtd_theme',
       ],
-    # packages_dir={'Layout':['Layout']},
-    packages=['Layout'],
-    # py_modules=['Layout.logger'],
+    packages=['SLMlayout', 'SLMlayout.layouts'],
     cmdclass=cmdclass,
     ext_modules=ext_modules
 )
