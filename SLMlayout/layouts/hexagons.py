@@ -198,7 +198,7 @@ class Hexagons(Layout):
                     self._grid.append(pos)
                     self.nParts += 1
                     rsq.append(_rsq)
-                    self._angles.append(np.arctan2(1.*(pos[0]-self._center[0]),1.*(pos[1]-self._center[1])))
+                    self._angles.append(np.arctan2(1.*(pos[0]-self._center[1]),1.*(pos[1]-self._center[0])))
 
         self._parts = self._parts
         self._grid = np.array(self._grid)
