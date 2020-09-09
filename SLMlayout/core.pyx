@@ -143,8 +143,72 @@ class Layout:
         mask = mask.astype(int)
         mask *= (2**8-1)
         return mask.astype(np.uint8)
+
+    def getModulatedMask(self):
+        '''
+        Compute an binary mask corresponding to the mouldated area on the modulator.
+        Return an array of the same resolution as the modulator with 1. where it corresponds to 
+        a pixel that is modulated (is inside a macropixel) and 0. otherwise.
+        '''
+
+        modulated_mask = np.zeros([self._res[0],self._res[1]]) 
+        for part in self._parts:
+            modulated_mask[part[:,0],part[:,1]] = 1
+        return modulated_mask
+
+    def addPhaseRamp( 
+            self,
+            img,     
+            pi2_value,
+            period, 
+            angle = 0.,
+            mask = False,
+            dtype = np.float):
+        '''
+        Add a phase ramp to a real pattern. 
+        FOR PHASE MODULATOR ONLY.
+
+        img : np.array
+            The input image. Must have the same resolution as the modulator.
+
+        pi_value : int
+            Pixel value corrsponding to a 2pi modulation. 
+
+        period : float
+            FOR PHASE MODULATORS ONLY.
+            Add a phase ramp to the image with a period of phase_ramp_period.
+            If phase_ramp_period = None, no phase ramp is added (default).
+
+        period : float, optional
+            FOR PHASE MODULATORS ONLY.
+            Set the angle of the phase ramp is phase_ramp_period is not None, ignored otherwise.
+            Defaults to 0.
+
+        mask: boolean, optional
+            If mask = True, all the pixels that are not in modulated macropixels 
+            are set to 0.
+            Defaults to False.
+
+        dtype : dtype, optional
+            dtype of the returned array. Default dtype is np.float.
+
+        '''
+        
+        X,Y = np.meshgrid(np.arange(self._res[0]),np.arange(self._res[1]))
+        phase_ramp = (X*np.cos(angle) + Y*np.sin(angle))*pi2_value/period
+        # wrap between 0 and pi_value
+        modified = np.mod(phase_ramp + img, pi2_value+1)
+        if mask:
+            modulated_mask = self.getModulatedMask()
+            modified *= modulated_mask
+        return modified.astype(dtype)
    
-    def getImageFromVec(self,vec, overlap = False, dtype = complex):
+    def getImageFromVec(
+            self,
+            vec, 
+            overlap = False, 
+            dtype = complex
+            ):
         '''
         Creates a image from a list of values corresponding to the field one want to display on each segment of the layout.
         The returned mask can then be used to send images to a DMD using the ALP4lib module.
@@ -170,7 +234,6 @@ class Layout:
             raise ValueError('Vector should have the same number of elements as the number of parts in the layout.')
         
         img = np.zeros([self._res[0],self._res[1]],dtype = dtype) 
-
         
         for part,x in zip(self._parts,vec):
             if overlap:
