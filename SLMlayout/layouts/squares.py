@@ -75,41 +75,6 @@ class Squares(Layout):
         self._oneSqua = np.argwhere(np.ones((self._cellSize,self._cellSize))).astype(int)
 
     
-
-    # def getSquareSegments(self):
-    #     self.nParts = 0
-    #     ny_max = int(np.floor(float(self._radius)/self._cellSize))
-    #     rsq = []
-    #     self._parts = []
-    #     self._grid = []
-    #     self._angles = []
-    #     x_shift = int(np.floor(self._cellSize+self._gap))
-    #    # x_shift -= np.mod(x_shift+1,2) 
-    #     y_shift = int(np.floor(self._gap+self._cellSize))
-    #     #y_shift += np.mod(y_shift+1,2) 
-    #     for y in np.arange(-ny_max-1,ny_max+1):
-    #         ind = np.mod(y,2)
-    #         # one out of two line is shifted
-    #         add_shift = ind*int(0.5*(self._cellSize+self._gap))
-    #         if (float(self._radius)/y_shift)**2-y**2 > 0:
-    #             nx_max = int(np.floor(np.sqrt((float(self._radius)/y_shift)**2-y**2)))
-    #         else:
-    #             nx_max = 2
-    #         for x in np.arange(-nx_max-1,nx_max+1):
-    #             pos = [int(self._center[0]+x*x_shift+add_shift),int(self._center[1]+y*y_shift)]
-    #             _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
-    #             if (_rsq <= self._radius**2):
-    #                 self._parts.append((self._oneSqua+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
-    #                 self._grid.append(pos)
-    #                 self.nParts += 1
-    #                 rsq.append(_rsq)
-    #                 self._angles.append(np.arctan2(1.*(pos[0]-self._center[0]),1.*(pos[1]-self._center[1])))
-
-    #     self._parts = np.array(self._parts)
-    #     self._grid = np.array(self._grid)
-    #     self._angles = np.array(self._angles)
-    #     self._rparts = np.sqrt(rsq)
-
     def getSquareSegments(self):
         self.nParts = 0
         ny_max = int(np.floor(float(self._radius)/(self._cellSize+ self._gap)))
