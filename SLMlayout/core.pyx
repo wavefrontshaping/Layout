@@ -134,7 +134,7 @@ class Layout:
         '''
         assert not np.max(np.abs(complex_pattern)) > 1.
   
-        phase_shift = np.floor(np.angle(complex_pattern)/(2*np.pi)*leePeriod-1e-5)
+        phase_shift = np.floor(np.angle(complex_pattern)/(2*np.pi)*leePeriod)
         X,Y = np.meshgrid(np.arange(self._res[1]),np.arange(self._res[0]))
         mask = (np.mod((np.cos(angle)*X+np.sin(angle)*Y+phase_shift),leePeriod) \
                 < leePeriod*0.5) 
