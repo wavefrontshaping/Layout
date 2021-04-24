@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#!python
+#cython: language_level=3
 """
 Created on Thu Oct 13 14:41:53 2016
 
@@ -12,15 +14,21 @@ The core module of SLMlayout
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 import time
 import numpy as np
-cimport numpy as np
+# cimport numpy as np
 import matplotlib.pyplot as plt
 import ctypes as ct
 import itertools 
 from matplotlib.path import Path
-from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from cpython cimport array
+# from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
+# from cpython cimport array
 import array
 import logging
+from .numba_functions import (
+    _getSingleProjection, 
+    _getStackProjections, 
+    _getBitPlaneFromVec,
+    _getMaskFromBitPlane,
+)
 
 
 def get_logger(name):
@@ -28,7 +36,7 @@ def get_logger(name):
         logger = logging.getLogger(name)
         if not getattr(logger, 'handler_set', None):
             logger.setLevel(logging.INFO)
-            logFormatter = logging.Formatter("%(asctime)s - %(name)-18.18s [%(levelname)-7.7s]  %(message)s") #[%(threadName)-12.12s] 
+            logFormatter = logging.Formatter("%(asctime)s - %(name)-18.18s [%(levelname)-7.7s]  %(message)s")
             consoleHandler = logging.StreamHandler()
             consoleHandler.setFormatter(logFormatter)
             logger.addHandler(consoleHandler)
@@ -53,8 +61,6 @@ def createPolygon(shape, vertices):
 
 def one_polygon_vertices(x,y,radius,sides):
     angles = np.linspace(-np.pi/2, -2.5*np.pi,sides, endpoint=False)+np.pi/2
-    # angles = np.arange(-np.pi/2,-2.5*np.pi,-np.pi/3)+np.pi/2
-    # print(angles-angles2)
     return [ [x+radius*np.cos(a),y+radius*np.sin(a)] for a in angles]
 
 def scale_coordinates(generator, image_width, image_height, side_length, center, radius):
@@ -65,7 +71,6 @@ def scale_coordinates(generator, image_width, image_height, side_length, center,
 
     for pos,coords in generator(scaled_width, scaled_height, scaled_center, scaled_radius):
         yield (pos[0]* side_length, pos[1]* side_length),[(x * side_length, y * side_length) for (x, y) in coords]
-
 
 def fromFile(file_path):
     '''
@@ -251,7 +256,14 @@ class Layout:
             self._pos_vec.append((np.array(part[:,1])//8).astype('uint')+(part[:,0]*self._res[1]//8).astype('uint'))
     
 
-    def getBitPlaneFromVec(self, vec, int leePeriod = 1, angle = 0, int inversion = False, dataFormat = 'Python'):
+    def getBitPlaneFromVec(
+        self, 
+        vec, 
+        leePeriod: int = 1, 
+        angle = 0,
+        inversion: int = False, 
+        dataFormat: str = 'Python'
+    ):
         '''
         Creates a bitplane from a list of values corresponding to the field one want to display on each segment of the layout.
         The returned bitplane can then be used to send images to a DMD using the ALP4lib module.
@@ -288,63 +300,30 @@ class Layout:
             A bitplane that can be sent to the DMD using the ALP4lib SeqPut() or SeqPutEx() function.
         '''
  
-
-        cdef int dataSize = <int>(self._res[0]*self._res[1]//8)
-        cdef int offset
-        cdef int cperiod = <unsigned int>leePeriod
-        cdef float tilt_y = <float>np.cos(angle)
-        cdef float tilt_x = <float>np.sin(angle)
-        cdef double [:] mvec_phi = np.angle(np.array(vec)).astype(np.double)
-        cdef double [:] mvec_amp = np.abs(np.array(vec)).astype(np.double)
-        cdef int i_vec, i_part
-
-
         if not self._pos_vec:
             self._calculatePosVec()
 
-
-        # Because of overlaps, elements may not have the same number of pixels,
-        # it is then not easy to build a n-dimension array in C to fit the data
-        # -> use 1D array and use a counter to increment the index
-        cdef int [:] mpos = np.concatenate(self._pos_vec).astype(np.intc) 
-        cdef int [:] mpartx = np.concatenate([p[:,0] for p in self._parts]).astype(np.intc) 
-        cdef int [:] mparty = np.concatenate([p[:,1] for p in self._parts]).astype(np.intc)
-        # store the lengths of each part for incrementing the counter 
-        cdef int [:] clengths = np.array([len(p) for p in self._pos_vec]).astype(np.intc) 
-        cdef unsigned int count_pos = 0
-
-        
-        img = (ct.c_ubyte*dataSize)()
- 
-
-            
-        #for i,x in enumerate(vec):
-        for i_vec from 0<= i_vec < <int>len(vec):
-
-            if mvec_amp[i_vec] != 0:
-                # encode the phase of the field in the spatial phase of the grating
-                offset =  <int>(np.floor(mvec_phi[i_vec]/(2.*np.pi)*leePeriod))
-
-                for i_part from 0<= i_part < clengths[i_vec] by 1:
-                    # first condition is the grating for encoding the phase
-                    # second condition encodes the amplitude by reducing removing lines in the direction orthogonal to the first grating
-                    if ((tilt_y*mparty[count_pos+i_part] + offset + tilt_x*mpartx[count_pos+i_part]) % cperiod)  < (0.5*cperiod) and \
-                       ((tilt_x*mparty[count_pos+i_part] - tilt_y*mpartx[count_pos+i_part]) % cperiod)  < (mvec_amp[i_vec]*cperiod) :
-
-                            img[mpos[count_pos+i_part]] ^=(1<<(~mparty[count_pos+i_part]&7))
-
-            count_pos += clengths[i_vec]
-
-        if inversion:
-            for i_part from 0<= i_part < dataSize by 1:
-                img[i_part] ^= 255
+        pos = np.concatenate(self._pos_vec)
+        lengths = np.array([len(p) for p in self._pos_vec])
+        parts = np.concatenate([p for p in self._parts])
+           
+        img = _getBitPlaneFromVec(
+            np.array(vec).astype(np.complex64), 
+            np.array(self._res),
+            pos,
+            lengths,
+            parts,
+            leePeriod, 
+            angle,
+            inversion
+        )
                   
         # PyMem_Free(c_part)
 
         if dataFormat == 'C':
-            return img
+            return img.ctypes.data_as(ct.POINTER(ct.c_ubyte))
         elif dataFormat == 'Python':
-            return np.asarray(img)
+            return img
     
   
 
@@ -366,28 +345,21 @@ class Layout:
         '''
         assert(np.mod(self._res[1],8) == 0)
 
-        cdef unsigned int [:,:] img = np.empty(self._res,dtype=np.uintc)
-        cdef unsigned int ix, iy, ibit
-        cdef unsigned char [:] mbp = bitPlane
-
-        for ix from 0<= ix < self._res[0] by 1:
-            for iy from 0<= iy < self._res[1]//8 by 1:
-                for ibit from 0<= ibit < 8:
-                    img[ix,iy*8+ibit] = (mbp[ix*self._res[1]//8+iy]>>7-ibit)&1
-
-        return np.asarray(img)
-  
+        return _getMaskFromBitPlane(bitPlane, np.array(self._res))
 
 
     def getProjections(self, array, method = 'sum'):
         '''
         Returns the projection of an array on the segments of the layout.
-        
+
         Parameters
         ----------
         array : ndarray
-            It has to have the same dimension as the layout.
-        
+            2d or 3d array.
+            2d arrays should have the same dimension as the layout.
+            3d arrays are considered as stack of images to be projected, 
+            the last two dimensions should be the same as the layout.
+
         method : string, optional
             If method = 'sum', returns the sum of the values of the array on each segment of the layout,
             if method = 'average', returns the average value of the array on each segment of the layout,
@@ -395,33 +367,32 @@ class Layout:
             in the segments and the phase is the phase at the center of the segments,
             if method = 'center', returns the value at the center of each segment.
             The default value is 'average'.
-            
+
         Returns
         -------
         out_vec : list
             List of coefficient corresponding to the projection on each segment of the layout.
         '''
         if not method in ['sum','center','complex','average']:
-            raise(ValueError,'Unvalid method.')
-        
+            raise ValueError('Unvalid method.')
 
-        out_vec = np.empty(self.nParts, dtype = complex)
+        if array.ndim > 3 or array.ndim < 2:
+            raise ValueError('Invalid array dimension, should be 2d or 3d.')
 
-        for idx,part in enumerate(self._parts):
-            if method == 'complex' or  method == 'center':
-                #coords_center = np.mean(part,axis = 0).astype(np.int)
-                coords_center = tuple(zip(*[self._grid[idx]]))
-                if method == 'complex':
-                    #angle_center = np.angle(array[coords_center[0],coords_center[1]])
-                    angle_center = np.angle(array[coords_center])
-                    out_vec[idx] = np.sum(np.abs(array[part[:,0],part[:,1]])) * np.exp(1j * angle_center)
-                elif method == 'center':
-                    out_vec[idx] = array[coords_center]
-            elif method == 'sum':
-                out_vec[idx] = np.sum(array[part[:,0],part[:,1]])
-            elif method == 'average':
-                out_vec[idx] = np.mean(array[part[:,0],part[:,1]])
-        return out_vec
+        if array.ndim == 3:       
+            return _getStackProjections(
+                        np.array(self._parts), 
+                        self._grid,
+                        array, 
+                        method
+                    ) 
+        elif array.ndim == 2:
+            return _getSingleProjection(
+                        np.array(self._parts), 
+                        self._grid,
+                        array, 
+                        method
+                    )  
 
     def getCenters(self,vec = None):
         '''
@@ -431,6 +402,7 @@ class Layout:
             return self._grid[vec]
         else:
             return self._grid
+        
     def sortSegments(self,order='dist2center', rearrange = True):
         '''
         Sort the segment with respect to the chosen criteria.
@@ -531,6 +503,7 @@ class Layout:
 
             # Remove the duplicates from the sum pattern 
             pattern[pattern == 2] = 1
+
 
 
         
