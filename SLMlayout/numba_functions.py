@@ -57,13 +57,11 @@ def _getBitPlaneFromVec(
 
 
 
-    # Because of overlaps, elements may not have the same number of pixels,
-    # it is then not easy to build a n-dimension array in C to fit the data
-    # -> use 1D array and use a counter to increment the index
+    
     
     partx = parts[:,0]
     party = parts[:,1]
-    # store the lengths of each part for incrementing the counter 
+    
     
     count_pos = 0
 
