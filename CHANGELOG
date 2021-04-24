@@ -1,0 +1,7 @@
+# Changelog
+
+## [0.3.0] 
+### Added features
+- Switched from Cython to Numba for improved efficiency
+- Add support for batch operations in `GetProjections()`
+
