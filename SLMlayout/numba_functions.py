@@ -95,4 +95,18 @@ def _getBitPlaneFromVec(
             img[i_part] ^= 255
             
     return img
+
+
+@jit(nopython = True)
+def _getMaskFromBitPlane(bitPlane, res):
+    
+    img = np.empty((res[0], res[1]), dtype=np.uint8)
+
+    for ix in range(res[0]):
+        for iy in range(res[1]//8):
+            for ibit in range(8):
+                img[ix,iy*8+ibit] = (bitPlane[ix*res[1]//8+iy]>>7-ibit)&1
+
+    return img
+
     

@@ -23,7 +23,12 @@ from matplotlib.path import Path
 # from cpython cimport array
 import array
 import logging
-from .numba_functions import _getSingleProjection, _getStackProjections, _getBitPlaneFromVec
+from .numba_functions import (
+    _getSingleProjection, 
+    _getStackProjections, 
+    _getBitPlaneFromVec,
+    _getMaskFromBitPlane,
+)
 
 
 def get_logger(name):
@@ -340,14 +345,7 @@ class Layout:
         '''
         assert(np.mod(self._res[1],8) == 0)
 
-        img = np.empty(self._res,dtype=np.uint)
-
-        for ix in range(self._res[0]):
-            for iy in range(self._res[1]//8):
-                for ibit in range(8):
-                    img[ix,iy*8+ibit] = (bitPlane[ix*self._res[1]//8+iy]>>7-ibit)&1
-
-        return img
+        return _getMaskFromBitPlane(bitPlane, np.array(self._res))
 
 
     def getProjections(self, array, method = 'sum'):
