@@ -8,28 +8,16 @@ In particular, it allows generating **bitplanes** in C format data that can be s
 If you find this tool usefull, please consider citing our paper:
 [M. Matthès, P. del Hougne, J. de Rosny, G. Lerosey, and S. Popoff, "Optical complex media as universal reconfigurable linear operators," Optica *6*, 465-472 (2019).](https://doi.org/10.1364/OPTICA.6.000465)
 
-## Requirements
-
-* Numpy
-* Matplotlib
-* [Cython](https://cython.org/): 
-
-If you are using conda:
-
-```shell
-conda install cython
-```
-
-or with pip
-
-
-```shell
-pip install cython
-```
 
 ## Installation
 
-Download the files and execute the following command.
+Simply install it with
+
+```shell
+pip install SLMlayout 
+```
+
+Alternatively, you can download the files and execute the following command
 
 ```shell
 python setup.py install
