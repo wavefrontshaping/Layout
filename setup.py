@@ -5,8 +5,6 @@ except ImportError:
     from distutils.core import setup
     from distutils.extension import Extension
 
-import numpy, sys, os
-
 setup(name='SLMlayout',
     version='0.3',
     setup_requires=[
