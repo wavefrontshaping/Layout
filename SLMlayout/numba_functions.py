@@ -35,6 +35,7 @@ def _getStackProjections(parts, grid, array, method = 'sum'):
                     array[i], 
                     method
                 )
+    return out
 
 
 @jit(nopython = True)
