@@ -1,0 +1,707 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Typical usage &mdash; SLMlayout 0.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> SLMlayout
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Typical usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#amplitude-and-phase-modulation-with-dmds">Amplitude and phase modulation with DMDs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-py">core.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SLMlayout</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Typical usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="typical-usage">
+<h1>Typical usage<a class="headerlink" href="#typical-usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="amplitude-and-phase-modulation-with-dmds">
+<h2>Amplitude and phase modulation with DMDs<a class="headerlink" href="#amplitude-and-phase-modulation-with-dmds" title="Permalink to this headline">¶</a></h2>
+<p>By nature, Digital Micromirror Devices (<strong>DMDs</strong>) and binary amplitude
+modulators.</p>
+<p>They are sometimes preferred to liquid crystal phase modulators for their speed,
+few kHz compared to 10 to 100Hz typically.</p>
+<p>However, phase modulation is often required for wavefront shaping manipulation
+as it is the best way to control interference.
+To do so, one popular technique is the <a class="reference external" href="https://www.wavefrontshaping.net/post/id/16">Lee Hologram approach</a>.
+It consists in:
+* introducing a low pass filter in the Fourier plane of the DMD,
+* encoding the phase of the field in the spatial phase of amplitude fringes.</p>
+<div class="figure align-center" id="id13">
+<img alt="_images/setup.png" src="_images/setup.png" />
+<p class="caption"><span class="caption-text">Typical setup for amplitude and phase modulation using DMDs.</span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">SLMlayout</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">Layout</span><span class="o">.</span><span class="n">Hexagons</span><span class="p">(</span><span class="n">radius</span> <span class="o">=</span> <span class="mi">350</span><span class="p">,</span>
+                     <span class="n">hexSize</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
+                     <span class="n">resolution</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1200</span><span class="p">,</span><span class="mi">1920</span><span class="p">],</span>
+                     <span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1200</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="mi">1920</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span>
+                     <span class="n">gap</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<span class="target" id="module-SLMlayout.core"></span><p>Created on Thu Oct 13 14:41:53 2016</p>
+<div class="section" id="core-py">
+<h3>core.py<a class="headerlink" href="#core-py" title="Permalink to this headline">¶</a></h3>
+<p>The core module of SLMlayout</p>
+<p>&#64;author: S.M. Popoff, M.W. Matthes</p>
+<dl class="py class">
+<dt id="SLMlayout.core.Layout">
+<em class="property">class </em><code class="sig-prename descclassname">SLMlayout.core.</code><code class="sig-name descname">Layout</code><a class="headerlink" href="#SLMlayout.core.Layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Layout super class.
+Contains the standard methods to generate mask from a vector
+and to handle the segments.</p>
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.addPhaseRamp">
+<code class="sig-name descname">addPhaseRamp</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">pi2_value</em>, <em class="sig-param">period</em>, <em class="sig-param">angle=0.0</em>, <em class="sig-param">mask=False</em>, <em class="sig-param">dtype=&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.addPhaseRamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a phase ramp to a real pattern.
+FOR PHASE MODULATOR ONLY.</p>
+<dl class="simple">
+<dt>img<span class="classifier">np.array</span></dt><dd><p>The input image. Must have the same resolution as the modulator.</p>
+</dd>
+<dt>pi_value<span class="classifier">int</span></dt><dd><p>Pixel value corrsponding to a 2pi modulation.</p>
+</dd>
+<dt>period<span class="classifier">float</span></dt><dd><p>FOR PHASE MODULATORS ONLY.
+Add a phase ramp to the image with a period of phase_ramp_period.
+If phase_ramp_period = None, no phase ramp is added (default).</p>
+</dd>
+<dt>period<span class="classifier">float, optional</span></dt><dd><p>FOR PHASE MODULATORS ONLY.
+Set the angle of the phase ramp is phase_ramp_period is not None, ignored otherwise.
+Defaults to 0.</p>
+</dd>
+<dt>mask: boolean, optional</dt><dd><p>If mask = True, all the pixels that are not in modulated macropixels
+are set to 0.
+Defaults to False.</p>
+</dd>
+<dt>dtype<span class="classifier">dtype, optional</span></dt><dd><p>dtype of the returned array. Default dtype is np.float.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.getBitPlaneFromVec">
+<code class="sig-name descname">getBitPlaneFromVec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vec</span></em>, <em class="sig-param"><span class="n">leePeriod</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">angle</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">inversion</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dataFormat</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'Python'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.getBitPlaneFromVec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a bitplane from a list of values corresponding to the field one want to display on each segment of the layout.
+The returned bitplane can then be used to send images to a DMD using the ALP4lib module.
+Each byte corresponds to the binary value of 8 successive pixels.</p>
+<p>If leePeriod &gt; 1, add a periodic modulation to create +1/-1 orders.
+vec can have a phase that will be discretized in the N=leePeriod phase values.
+The amplitude value is encoded by removing lines in the direction orthogonal to the Lee grating</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> (<em>list</em><em> or </em><em>np.array</em>) – A list or vector containing the complex values of the field one wants to assign to each segment of the layout.</p></li>
+<li><p><strong>leePeriod</strong> (<em>int</em><em>, </em><em>optional</em>) – The period of the Lee Hologram grating. The default value is 1 (no grating).</p></li>
+<li><p><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em>) – The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).</p></li>
+<li><p><strong>inversion</strong> (<em>bool</em><em>, </em><em>optional</em>) – If inversion is set to True, all the bits are switched (0/1 becomes 1/0). The default value is False.</p></li>
+<li><p><strong>dataFormat</strong> (<em>string</em><em>, </em><em>optional</em>) – if dataFormat == ‘Python’, return a numpy array, if dataFormat == ‘C’ returns a pointer to a C array (that can be sent using the ALP4lib SeqPut() function).
+By default, returns a numpy array (dataFormat = ‘Python’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – A bitplane that can be sent to the DMD using the ALP4lib SeqPut() or SeqPutEx() function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array or C pointer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.getCenters">
+<code class="sig-name descname">getCenters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vec</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.getCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the center position of the segments indexed by the input vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.getImageFromVec">
+<code class="sig-name descname">getImageFromVec</code><span class="sig-paren">(</span><em class="sig-param">vec</em>, <em class="sig-param">overlap=False</em>, <em class="sig-param">dtype=&lt;class 'complex'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.getImageFromVec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a image from a list of values corresponding to the field one want to display on each segment of the layout.
+The returned mask can then be used to send images to a DMD using the ALP4lib module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> (<em>list</em><em> or </em><em>np.array</em>) – A list or vector containing the values of the field one wants to assign to each segment of the layout.</p></li>
+<li><p><strong>overlap</strong> (<em>bool</em><em>, </em><em>optional</em>) – If overlap = True, the values will be added for pixels belonging to two or more segments of the layout (can happen with no gap between the segments)</p></li>
+<li><p><strong>dtype</strong> (<em>dtype</em><em>, </em><em>optional</em>) – dtype of the returned array. Default dtype is complex.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – The image that has the same resolution as the layout.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.getMaskFromBitPlane">
+<code class="sig-name descname">getMaskFromBitPlane</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bitPlane</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.getMaskFromBitPlane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the spatial mask as a numpy array from a bit plane.</p>
+<p>Requires the resolution to be a mutiple of 8.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bitPlane</strong> (<em>ndarray</em>) – A bitplane generated by getBitPlaneFromVec()</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – An numpy array representing the binary amplitude mask as displayed by the DMD.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.getMaskFromImage">
+<code class="sig-name descname">getMaskFromImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">complex_pattern</span></em>, <em class="sig-param"><span class="n">leePeriod</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">angle</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.getMaskFromImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a binary amplitude mask from a complex image of the sime size as the full Layout.
+WARNING: This function is not optimized in Cython.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> (<em>np.array</em>) – An image of the same size as the Layout corresponding to the target optical field. Can be complex valued.</p></li>
+<li><p><strong>leePeriod</strong> (<em>int</em><em>, </em><em>optional</em>) – The period of the Lee Hologram grating. The default value is 1 (no grating).</p></li>
+<li><p><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em>) – The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – The image that has the same resolution as the layout encoded in 8-bit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.getModulatedMask">
+<code class="sig-name descname">getModulatedMask</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.getModulatedMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute an binary mask corresponding to the mouldated area on the modulator.
+Return an array of the same resolution as the modulator with 1. where it corresponds to
+a pixel that is modulated (is inside a macropixel) and 0. otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.getProjections">
+<code class="sig-name descname">getProjections</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'sum'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.getProjections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the projection of an array on the segments of the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>ndarray</em>) – 2d or 3d array.
+2d arrays should have the same dimension as the layout.
+3d arrays are considered as stack of images to be projected,
+the last two dimensions should be the same as the layout.</p></li>
+<li><p><strong>method</strong> (<em>string</em><em>, </em><em>optional</em>) – If method = ‘sum’, returns the sum of the values of the array on each segment of the layout,
+if method = ‘average’, returns the average value of the array on each segment of the layout,
+if method = ‘complex’, returns a complex value whose amplitude is the sum of the absolute values
+in the segments and the phase is the phase at the center of the segments,
+if method = ‘center’, returns the value at the center of each segment.
+The default value is ‘average’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out_vec</strong> – List of coefficient corresponding to the projection on each segment of the layout.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.saveToFile">
+<code class="sig-name descname">saveToFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.saveToFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the current state of the Layout to a .npz file (it uses numpy.savez)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>string</em>) – Path of the file to save the Layout object to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.showLayout">
+<code class="sig-name descname">showLayout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.showLayout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the layout, shows each cell in a different color.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SLMlayout.core.Layout.sortSegments">
+<code class="sig-name descname">sortSegments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">'dist2center'</span></em>, <em class="sig-param"><span class="n">rearrange</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.Layout.sortSegments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the segment with respect to the chosen criteria.
+Returns the index list of the sorted elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>string</em><em>, </em><em>optional</em>) – Sorting criteria, can take following values:
+- ‘dist2center’ :  Sorts the elements by there distance to the center of the figure (default).
+- ‘angles’ : Sorts the elements by there angular position.
+- ‘random’ : Randomly shuffles the elements.</p></li>
+<li><p><strong>rearrange</strong> (<em>bool</em><em>, </em><em>optional</em>) – If rearrange is set to True, the order of the elements will be changed in the layout object,
+if not, the new order is returned via the index list but the layout object remains unchanged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> – List index of the sorted segments of the layout.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="SLMlayout.core.fromFile">
+<code class="sig-prename descclassname">SLMlayout.core.</code><code class="sig-name descname">fromFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SLMlayout.core.fromFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a Layout object created from a saved file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>string</em>) – Path of the saved file corresponding to the Layout object to load.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>layout</strong> – The loaded Layout object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#id0" title="SLMlayout.core.Layout">Layout</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<dl class="py class">
+<dt id="id0">
+<em class="property">class </em><code class="sig-prename descclassname">SLMlayout.core.</code><code class="sig-name descname">Layout</code><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Layout super class.
+Contains the standard methods to generate mask from a vector
+and to handle the segments.</p>
+<dl class="py method">
+<dt id="id1">
+<code class="sig-name descname">addPhaseRamp</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">pi2_value</em>, <em class="sig-param">period</em>, <em class="sig-param">angle=0.0</em>, <em class="sig-param">mask=False</em>, <em class="sig-param">dtype=&lt;class 'float'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a phase ramp to a real pattern.
+FOR PHASE MODULATOR ONLY.</p>
+<dl class="simple">
+<dt>img<span class="classifier">np.array</span></dt><dd><p>The input image. Must have the same resolution as the modulator.</p>
+</dd>
+<dt>pi_value<span class="classifier">int</span></dt><dd><p>Pixel value corrsponding to a 2pi modulation.</p>
+</dd>
+<dt>period<span class="classifier">float</span></dt><dd><p>FOR PHASE MODULATORS ONLY.
+Add a phase ramp to the image with a period of phase_ramp_period.
+If phase_ramp_period = None, no phase ramp is added (default).</p>
+</dd>
+<dt>period<span class="classifier">float, optional</span></dt><dd><p>FOR PHASE MODULATORS ONLY.
+Set the angle of the phase ramp is phase_ramp_period is not None, ignored otherwise.
+Defaults to 0.</p>
+</dd>
+<dt>mask: boolean, optional</dt><dd><p>If mask = True, all the pixels that are not in modulated macropixels
+are set to 0.
+Defaults to False.</p>
+</dd>
+<dt>dtype<span class="classifier">dtype, optional</span></dt><dd><p>dtype of the returned array. Default dtype is np.float.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id2">
+<code class="sig-name descname">getBitPlaneFromVec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vec</span></em>, <em class="sig-param"><span class="n">leePeriod</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">angle</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">inversion</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dataFormat</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'Python'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a bitplane from a list of values corresponding to the field one want to display on each segment of the layout.
+The returned bitplane can then be used to send images to a DMD using the ALP4lib module.
+Each byte corresponds to the binary value of 8 successive pixels.</p>
+<p>If leePeriod &gt; 1, add a periodic modulation to create +1/-1 orders.
+vec can have a phase that will be discretized in the N=leePeriod phase values.
+The amplitude value is encoded by removing lines in the direction orthogonal to the Lee grating</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> (<em>list</em><em> or </em><em>np.array</em>) – A list or vector containing the complex values of the field one wants to assign to each segment of the layout.</p></li>
+<li><p><strong>leePeriod</strong> (<em>int</em><em>, </em><em>optional</em>) – The period of the Lee Hologram grating. The default value is 1 (no grating).</p></li>
+<li><p><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em>) – The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).</p></li>
+<li><p><strong>inversion</strong> (<em>bool</em><em>, </em><em>optional</em>) – If inversion is set to True, all the bits are switched (0/1 becomes 1/0). The default value is False.</p></li>
+<li><p><strong>dataFormat</strong> (<em>string</em><em>, </em><em>optional</em>) – if dataFormat == ‘Python’, return a numpy array, if dataFormat == ‘C’ returns a pointer to a C array (that can be sent using the ALP4lib SeqPut() function).
+By default, returns a numpy array (dataFormat = ‘Python’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – A bitplane that can be sent to the DMD using the ALP4lib SeqPut() or SeqPutEx() function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array or C pointer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id3">
+<code class="sig-name descname">getCenters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vec</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the center position of the segments indexed by the input vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id4">
+<code class="sig-name descname">getImageFromVec</code><span class="sig-paren">(</span><em class="sig-param">vec</em>, <em class="sig-param">overlap=False</em>, <em class="sig-param">dtype=&lt;class 'complex'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a image from a list of values corresponding to the field one want to display on each segment of the layout.
+The returned mask can then be used to send images to a DMD using the ALP4lib module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> (<em>list</em><em> or </em><em>np.array</em>) – A list or vector containing the values of the field one wants to assign to each segment of the layout.</p></li>
+<li><p><strong>overlap</strong> (<em>bool</em><em>, </em><em>optional</em>) – If overlap = True, the values will be added for pixels belonging to two or more segments of the layout (can happen with no gap between the segments)</p></li>
+<li><p><strong>dtype</strong> (<em>dtype</em><em>, </em><em>optional</em>) – dtype of the returned array. Default dtype is complex.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – The image that has the same resolution as the layout.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id5">
+<code class="sig-name descname">getMaskFromBitPlane</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bitPlane</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the spatial mask as a numpy array from a bit plane.</p>
+<p>Requires the resolution to be a mutiple of 8.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bitPlane</strong> (<em>ndarray</em>) – A bitplane generated by getBitPlaneFromVec()</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – An numpy array representing the binary amplitude mask as displayed by the DMD.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id6">
+<code class="sig-name descname">getMaskFromImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">complex_pattern</span></em>, <em class="sig-param"><span class="n">leePeriod</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">angle</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a binary amplitude mask from a complex image of the sime size as the full Layout.
+WARNING: This function is not optimized in Cython.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> (<em>np.array</em>) – An image of the same size as the Layout corresponding to the target optical field. Can be complex valued.</p></li>
+<li><p><strong>leePeriod</strong> (<em>int</em><em>, </em><em>optional</em>) – The period of the Lee Hologram grating. The default value is 1 (no grating).</p></li>
+<li><p><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em>) – The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – The image that has the same resolution as the layout encoded in 8-bit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id7">
+<code class="sig-name descname">getModulatedMask</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute an binary mask corresponding to the mouldated area on the modulator.
+Return an array of the same resolution as the modulator with 1. where it corresponds to
+a pixel that is modulated (is inside a macropixel) and 0. otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id8">
+<code class="sig-name descname">getProjections</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'sum'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the projection of an array on the segments of the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>ndarray</em>) – 2d or 3d array.
+2d arrays should have the same dimension as the layout.
+3d arrays are considered as stack of images to be projected,
+the last two dimensions should be the same as the layout.</p></li>
+<li><p><strong>method</strong> (<em>string</em><em>, </em><em>optional</em>) – If method = ‘sum’, returns the sum of the values of the array on each segment of the layout,
+if method = ‘average’, returns the average value of the array on each segment of the layout,
+if method = ‘complex’, returns a complex value whose amplitude is the sum of the absolute values
+in the segments and the phase is the phase at the center of the segments,
+if method = ‘center’, returns the value at the center of each segment.
+The default value is ‘average’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out_vec</strong> – List of coefficient corresponding to the projection on each segment of the layout.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id9">
+<code class="sig-name descname">saveToFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id9" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the current state of the Layout to a .npz file (it uses numpy.savez)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>string</em>) – Path of the file to save the Layout object to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id10">
+<code class="sig-name descname">showLayout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id10" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the layout, shows each cell in a different color.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="id11">
+<code class="sig-name descname">sortSegments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">'dist2center'</span></em>, <em class="sig-param"><span class="n">rearrange</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id11" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the segment with respect to the chosen criteria.
+Returns the index list of the sorted elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>string</em><em>, </em><em>optional</em>) – Sorting criteria, can take following values:
+- ‘dist2center’ :  Sorts the elements by there distance to the center of the figure (default).
+- ‘angles’ : Sorts the elements by there angular position.
+- ‘random’ : Randomly shuffles the elements.</p></li>
+<li><p><strong>rearrange</strong> (<em>bool</em><em>, </em><em>optional</em>) – If rearrange is set to True, the order of the elements will be changed in the layout object,
+if not, the new order is returned via the index list but the layout object remains unchanged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>idx</strong> – List index of the sorted segments of the layout.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt id="id12">
+<code class="sig-prename descclassname">Layout.</code><code class="sig-name descname">getMaskFromImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">complex_pattern</span></em>, <em class="sig-param"><span class="n">leePeriod</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">angle</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id12" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a binary amplitude mask from a complex image of the sime size as the full Layout.
+WARNING: This function is not optimized in Cython.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec</strong> (<em>np.array</em>) – An image of the same size as the Layout corresponding to the target optical field. Can be complex valued.</p></li>
+<li><p><strong>leePeriod</strong> (<em>int</em><em>, </em><em>optional</em>) – The period of the Lee Hologram grating. The default value is 1 (no grating).</p></li>
+<li><p><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em>) – The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>array</strong> – The image that has the same resolution as the layout encoded in 8-bit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-SLMlayout.hexagons"></span><div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Sébastien M. Popoff and Maxime W. Matthès.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
