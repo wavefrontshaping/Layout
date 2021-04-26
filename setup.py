@@ -6,7 +6,7 @@ except ImportError:
     from distutils.extension import Extension
 
 setup(name='SLMlayout',
-    version='0.3',
+    version=SLMlayout.__version__,
     setup_requires=[
           'setuptools',
       ],
