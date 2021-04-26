@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.1]
+
+### Bug correction
+- Correct no return for _getBitPlaneFromVec()
+
 ## [0.3.0] 
 ### Added features
 - Switched from Cython to Numba for improved efficiency
