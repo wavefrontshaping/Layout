@@ -202,7 +202,7 @@ class Layout:
         X,Y = np.meshgrid(np.arange(self._res[0]),np.arange(self._res[1]))
         phase_ramp = (X*np.cos(angle) + Y*np.sin(angle))*pi2_value/period
         # wrap between 0 and pi_value
-        modified = np.mod(phase_ramp + img, pi2_value+1)
+        modified = np.mod(phase_ramp + img, pi2_value)
         if mask:
             modulated_mask = self.getModulatedMask()
             modified *= modulated_mask
