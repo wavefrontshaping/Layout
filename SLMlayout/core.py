@@ -458,8 +458,8 @@ class Layout:
         pattern = self.getImageFromVec(np.arange(10,10+self.nParts), dtype = float)
         plt.figure()
         plt.imshow(pattern)
-        plt.show()
         plt.colorbar()
+        plt.show()
 
     def calculateSurfaces(self):
         self._surfaces = []
