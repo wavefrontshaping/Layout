@@ -147,7 +147,7 @@ class Layout:
         X,Y = np.meshgrid(np.arange(self._res[1]), np.arange(self._res[0]))
         mask = (np.mod((np.cos(angle)*X + np.sin(angle)*Y + phase_shift), leePeriod) \
                 < leePeriod*0.5) 
-        mask *= (np.mod((-np.sin(angle)*X + np.cos(angle)*Y), leePeriod) \
+        mask *= (np.mod((np.sin(angle)*X - np.cos(angle)*Y), leePeriod) \
                 < leePeriod*np.abs(complex_pattern))
         mask = mask.astype(int)
         mask *= (2**8-1)
