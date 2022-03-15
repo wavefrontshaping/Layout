@@ -67,7 +67,7 @@ def _getBitPlaneFromVec(
     for i_vec in range(len(vec)):
         if vec_amp[i_vec] != 0:
             # encode the phase of the field in the spatial phase of the grating
-            phase_shift =  np.floor(vec_phi[i_vec]/(2.*np.pi)*leePeriod) + phase_offset
+            phase_shift =  vec_phi[i_vec]/(2.*np.pi)*leePeriod + phase_offset
 
             for i_part in range(lengths[i_vec]):
                 # first condition is the grating for encoding the phase
