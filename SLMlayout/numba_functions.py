@@ -47,7 +47,8 @@ def _getBitPlaneFromVec(
         parts,
         leePeriod, 
         angle,
-        inversion
+        inversion,
+        phase_offset
     ):
     
     dataSize = (res[0]*res[1]//8)
@@ -55,14 +56,9 @@ def _getBitPlaneFromVec(
     tilt_x = np.sin(angle)
     vec_phi = np.angle(vec)
     vec_amp = np.abs(vec)
-
-
-
-    
     
     partx = parts[:,0]
     party = parts[:,1]
-    
     
     count_pos = 0
 
@@ -71,13 +67,13 @@ def _getBitPlaneFromVec(
     for i_vec in range(len(vec)):
         if vec_amp[i_vec] != 0:
             # encode the phase of the field in the spatial phase of the grating
-            offset =  np.floor(vec_phi[i_vec]/(2.*np.pi)*leePeriod)
+            phase_shift =  vec_phi[i_vec]/(2.*np.pi)*leePeriod + phase_offset
 
             for i_part in range(lengths[i_vec]):
                 # first condition is the grating for encoding the phase
                 # second condition encodes the amplitude by reducing removing
                 # lines in the direction orthogonal to the first grating
-                if ((tilt_y*party[count_pos+i_part] + offset + \
+                if ((tilt_y*party[count_pos+i_part] + phase_shift + \
                      tilt_x*partx[count_pos+i_part]) % leePeriod) \
                          < (0.5*leePeriod) \
                 and \

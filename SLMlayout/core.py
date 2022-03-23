@@ -116,7 +116,7 @@ class Layout:
         '''
         np.savez(file_path, **self.__dict__)
         
-    def getMaskFromImage(self, complex_pattern, leePeriod = 1, angle = 0):
+    def getMaskFromImage(self, complex_pattern, leePeriod = 1, angle = 0, phase_offset = 0.01):
         '''
         Generate a binary amplitude mask from a complex image of the sime size as the full Layout.
         WARNING: This function is not optimized in Cython.
@@ -131,6 +131,10 @@ class Layout:
 
         angle : float, optional
             The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).
+        
+        phase_offset : float, optional
+            Slight shift in the modulation of the fringes encoding the phase needed to avoid 
+            inconsistent fringes whent angle is not zero.
 
         Returns
         -------
@@ -138,12 +142,12 @@ class Layout:
             The image that has the same resolution as the layout encoded in 8-bit.
         '''
         assert not np.max(np.abs(complex_pattern)) > 1.
-  
-        phase_shift = np.floor(np.angle(complex_pattern)/(2*np.pi)*leePeriod)
-        X,Y = np.meshgrid(np.arange(self._res[1]),np.arange(self._res[0]))
-        mask = (np.mod((np.cos(angle)*X+np.sin(angle)*Y+phase_shift),leePeriod) \
+
+        phase_shift = np.floor(np.angle(complex_pattern)/(2*np.pi)*leePeriod) + phase_offset
+        X,Y = np.meshgrid(np.arange(self._res[1]), np.arange(self._res[0]))
+        mask = (np.mod((np.cos(angle)*X + np.sin(angle)*Y + phase_shift), leePeriod) \
                 < leePeriod*0.5) 
-        mask *= (np.mod((-np.sin(angle)*X+np.cos(angle)*Y),leePeriod) \
+        mask *= (np.mod((np.sin(angle)*X - np.cos(angle)*Y), leePeriod) \
                 < leePeriod*np.abs(complex_pattern))
         mask = mask.astype(int)
         mask *= (2**8-1)
@@ -259,8 +263,9 @@ class Layout:
     def getBitPlaneFromVec(
         self, 
         vec, 
-        leePeriod: int = 1, 
+        leePeriod = 1, 
         angle = 0,
+        phase_offset = 0.01,
         inversion: int = False, 
         dataFormat: str = 'Python'
     ):
@@ -284,6 +289,10 @@ class Layout:
 
         angle : float, optional
             The angle of the Lee Hologram grating. The default angle is 0 (vertical grating).
+
+        phase_offset : float, optional
+            Slight shift in the modulation of the fringes encoding the phase needed to avoid 
+            inconsistent fringes whent angle is not zero.
 
         inversion : bool, optional
             If inversion is set to True, all the bits are switched (0/1 becomes 1/0). The default value is False.
@@ -319,7 +328,8 @@ class Layout:
             parts,
             leePeriod, 
             angle,
-            inversion
+            inversion,
+            phase_offset
         )
                   
         # PyMem_Free(c_part)
@@ -458,8 +468,8 @@ class Layout:
         pattern = self.getImageFromVec(np.arange(10,10+self.nParts), dtype = float)
         plt.figure()
         plt.imshow(pattern)
-        plt.show()
         plt.colorbar()
+        plt.show()
 
     def calculateSurfaces(self):
         self._surfaces = []
