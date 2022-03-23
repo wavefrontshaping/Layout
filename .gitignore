@@ -1,0 +1,9 @@
+/docs/build
+*/__pycache__
+.*
+!.gitignore
+*.log
+/old*
+*.egg*
+/build
+/dist
