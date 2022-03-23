@@ -84,7 +84,19 @@ class Squares(Layout):
         self._angles = []
         x_shift = int(np.floor(self._cellSize+self._gap))
         y_shift = int(np.floor(self._gap+self._cellSize))
-        for y in np.arange(-ny_max,ny_max+1):
+
+        if self._sqZone:
+            even = 1-np.mod(int(2*self._radius/(self._cellSize+self._gap)),2)
+            even_shift = int(np.floor(self._cellSize+self._gap)/2)+1 if even else 0
+            index_even_shift = -1 if even else 0
+        else:
+            even_shift = 0
+            index_even_shift = 0
+
+        # if even number of square, we need to offset everything by half a period
+        
+
+        for y in np.arange(-ny_max,ny_max+1+index_even_shift):
             ind = np.mod(y,2)
             # one out of two line is shifted
             add_shift = ind*int(0.5*(self._cellSize+self._gap)) if not(self._sqZone) else 0
@@ -95,8 +107,8 @@ class Squares(Layout):
                     nx_max = 2
             else:
                 nx_max = int(np.floor(float(self._radius)/(self._cellSize+ self._gap)))
-            for x in np.arange(-nx_max,nx_max+1):
-                pos = [int(self._center[0]+x*x_shift+add_shift),int(self._center[1]+y*y_shift)]
+            for x in np.arange(-nx_max,nx_max+1+index_even_shift):
+                pos = [int(self._center[0]+x*x_shift+add_shift+even_shift),int(self._center[1]+y*y_shift+even_shift)]
                 _rsq = (pos[0]-self._center[0])**2 +  (pos[1]-self._center[1])**2
                 self._parts.append((self._oneSqua+np.array(pos)-[self._resCell[0]/2,self._resCell[0]/2]).astype(int))
                 self._grid.append(pos)
