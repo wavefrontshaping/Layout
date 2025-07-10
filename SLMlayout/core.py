@@ -168,7 +168,7 @@ class Layout:
             period, 
             angle = 0.,
             mask = False,
-            dtype = np.float):
+            dtype = float):
         '''
         Add a phase ramp to a real pattern. 
         FOR PHASE MODULATOR ONLY.
@@ -195,7 +195,7 @@ class Layout:
             Defaults to False.
 
         dtype : dtype, optional
-            dtype of the returned array. Default dtype is np.float.
+            dtype of the returned array. Default dtype is float.
 
         '''
         
